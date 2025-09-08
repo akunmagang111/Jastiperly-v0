@@ -14,64 +14,110 @@
             <li class="dropdown">
                 <a  href="javascript:void(0)">
                     <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
-                    <span>Dashboard</span>
+                    <span>Utility</span>
                 </a>
                 <ul class="sidebar-submenu">
-                    <li>
-                        <a href="{{ route(Auth::user()->role . '.index') }}">
-                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> AI
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route(Auth::user()->role . '.index2') }}">
-                            <i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> CRM
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route(Auth::user()->role . '.index3') }}">
-                            <i class="ri-circle-fill circle-icon text-info-main w-auto"></i> eCommerce
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route(Auth::user()->role . '.index4') }}">
-                            <i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Cryptocurrency
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route(Auth::user()->role . '.index5') }}">
-                            <i class="ri-circle-fill circle-icon text-success-main w-auto"></i> Investment
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route(Auth::user()->role . '.index6') }}">
-                            <i class="ri-circle-fill circle-icon text-purple w-auto"></i> LMS
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route(Auth::user()->role . '.index7') }}">
-                            <i class="ri-circle-fill circle-icon text-info-main w-auto"></i> NFT & Gaming
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route(Auth::user()->role . '.index8') }}">
-                            <i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> Medical
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route(Auth::user()->role . '.index9') }}">
-                            <i class="ri-circle-fill circle-icon text-purple w-auto"></i> Analytics
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route(Auth::user()->role . '.index10') }}">
-                            <i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> POS & Inventory
-                        </a>
-                    </li>
+                    {{-- FINANCE --}}
+                    @if(Auth::user()->role === 'finance')
+                        <li>
+                            <a href="{{ route('finance.index') }}">
+                                <iconify-icon icon="solar:widget-4-outline" class="menu-icon"></iconify-icon> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('finance.index2') }}">
+                                <iconify-icon icon="solar:card-outline" class="menu-icon"></iconify-icon> Transaksi
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('finance.index3') }}">
+                                <iconify-icon icon="mdi:airplane" class="menu-icon"></iconify-icon> Traveler
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('finance.index4') }}">
+                                <iconify-icon icon="solar:box-outline" class="menu-icon"></iconify-icon> Penitip
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('finance.index5') }}">
+                                <iconify-icon icon="solar:refresh-outline" class="menu-icon"></iconify-icon> Refund
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('finance.index6') }}">
+                                <iconify-icon icon="solar:settings-outline" class="menu-icon"></iconify-icon> Pengaturan
+                            </a>
+                        </li>
+                    @endif
+
+                    {{-- ADMIN --}}
+                    @if(Auth::user()->role === 'admin')
+                        <li>
+                            <a href="{{ route('admin.index') }}">
+                                <iconify-icon icon="solar:widget-4-outline" class="menu-icon"></iconify-icon> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.index2') }}">
+                                <iconify-icon icon="solar:users-group-rounded-outline" class="menu-icon"></iconify-icon> Manajemen Pelanggan
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.index3') }}">
+                                <iconify-icon icon="solar:card-outline" class="menu-icon"></iconify-icon> Transaksi
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.index4') }}">
+                                <iconify-icon icon="solar:bag-4-outline" class="menu-icon"></iconify-icon> Manajemen Produk
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.index5') }}">
+                                <iconify-icon icon="solar:settings-outline" class="menu-icon"></iconify-icon> Pengaturan
+                            </a>
+                        </li>
+                    @endif
+
+                    {{-- SUPERADMIN --}}
+                    @if(Auth::user()->role === 'superadmin')
+                        <li>
+                            <a href="{{ route('superadmin.index') }}">
+                                <iconify-icon icon="solar:widget-4-outline" class="menu-icon"></iconify-icon> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('superadmin.index2') }}">
+                                <iconify-icon icon="solar:user-id-outline" class="menu-icon"></iconify-icon> Manajemen Pengguna
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('superadmin.index3') }}">
+                                <iconify-icon icon="solar:bag-4-outline" class="menu-icon"></iconify-icon> Manajemen Produk
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('superadmin.index4') }}">
+                                <iconify-icon icon="solar:card-outline" class="menu-icon"></iconify-icon> Transaksi
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('superadmin.index5') }}">
+                                <iconify-icon icon="solar:refresh-outline" class="menu-icon"></iconify-icon> Refund
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('superadmin.index6') }}">
+                                <iconify-icon icon="solar:settings-outline" class="menu-icon"></iconify-icon> Pengaturan
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </li>
             <li class="sidebar-menu-group-title">Application</li>
             <li>
-                  <a href="{{ route('email') }}">
+                <a href="{{ route('email') }}">
                     <iconify-icon icon="mage:email" class="menu-icon"></iconify-icon>
                     <span>Email</span>
                 </a>

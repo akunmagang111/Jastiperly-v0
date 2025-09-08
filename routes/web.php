@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AiapplicationController;
@@ -24,10 +25,10 @@ use App\Http\Controllers\_superadmin\SuperadminDashboardController;
 
 
 // ------------------- AUTHENTICATION (Breeze + Custom) -------------------
-Route::get('/login', [AuthenticationController::class, 'signIn'])->name('login');
-Route::post('/login', [AuthenticationController::class, 'login']);
-Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
-Route::get('/register', [AuthenticationController::class, 'signUp']);
+Route::get('/login', [AuthenticatedSessionController::class, 'signIn'])->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'login']);
+Route::post('/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
+Route::get('/register', [AuthenticatedSessionController::class, 'signUp']);
 Route::get('/logoutnih', function () {
     Auth::logout();
     request()->session()->invalidate();

@@ -21,7 +21,7 @@
                                         <iconify-icon icon="mingcute:user-follow-fill" class="icon"></iconify-icon>
                                     </span>
                                     <div>
-                                        <span class="mb-2 fw-medium text-secondary-light text-sm">New Usersa</span>
+                                        <span class="mb-2 fw-medium text-secondary-light text-sm">New Users</span>
                                         <h6 class="fw-semibold">15,000</h6>
                                     </div>
                                 </div>

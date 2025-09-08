@@ -1,3 +1,8 @@
+# 🚀 Starter Project Laravel + Vite + Breeze
+
+Starter kit Laravel dengan **Laravel Breeze (Auth)**, **role-based access** (`admin`, `finance`, `superadmin`), dan struktur dashboard per-role.
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -7,60 +12,288 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✅ Prasyarat
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP **^8.1** (disarankan 8.2) + ekstensi umum (OpenSSL, PDO, Mbstring, Tokenizer, XML, Ctype, JSON, BCMath)
+- Composer **2.x**
+- Node.js **^18** (atau 20 LTS) + NPM
+- MySQL/MariaDB atau DB lain yang didukung
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 1) Clone Repository
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+git clone https://github.com/<username>/<repo>.git
+cd <repo>
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+> Ganti `<username>/<repo>` dengan URL GitHub kamu.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 2) Install Dependencies
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+composer install
+npm install
+```
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 3) Siapkan Environment
 
-## Contributing
+Salin file env & generate key:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Code of Conduct
+Contoh `.env` (silakan sesuaikan):
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```env
+APP_NAME="Starter v1.2"
+APP_ENV=local
+APP_KEY=base64:***TERISI_OTOMATIS_SETELAH_KEY:GENERATE***
+APP_DEBUG=true
+APP_URL=http://localhost
 
-## Security Vulnerabilities
+LOG_CHANNEL=stack
+LOG_LEVEL=debug
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=starter_v12
+DB_USERNAME=root
+DB_PASSWORD=
 
-## License
+# Cache / Session / Queue (default)
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+FILESYSTEM_DISK=public
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Mail (opsional)
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+
+# Vite
+VITE_APP_NAME="${APP_NAME}"
+VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+VITE_PUSHER_HOST="${PUSHER_HOST}"
+VITE_PUSHER_PORT="${PUSHER_PORT}"
+VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+```
+
+**(Opsional)** Buat symlink storage:
+
+```bash
+php artisan storage:link
+```
+
+---
+
+## 4) Migration & Seeder
+
+```bash
+php artisan migrate --seed
+```
+
+> Pastikan seeder membuat user & role (admin/finance/superadmin). Jika belum:
+> - Buat user manual via `php artisan tinker` atau Register
+> - Tambahkan kolom `role` pada tabel users (enum/string)
+> - Set `role` user sesuai kebutuhan: `admin`, `finance`, atau `superadmin`.
+
+---
+
+## 5) Jalankan Aplikasi
+
+Backend (Laravel):
+
+```bash
+php artisan serve
+```
+
+Frontend (Vite):
+
+```bash
+npm run dev
+```
+
+Akses:
+- Laravel: **http://localhost:8000**
+- Vite: **http://localhost:5173**
+
+---
+
+## 6) Routing & Role
+
+Project memisahkan dashboard per-role:
+
+- **Admin**:  
+  - `/admin/dashboard` … `/admin/dashboard10`
+  - Route names: `admin.index`, `admin.index2`, … `admin.index10`
+
+- **Finance**:  
+  - `/finance/dashboard` … `/finance/dashboard10`
+  - Route names: `finance.index`, `finance.index2`, … `finance.index10`
+
+- **Superadmin**:  
+  - `/superadmin/dashboard` … `/superadmin/dashboard10`
+  - Route names: `superadmin.index`, `superadmin.index2`, … `superadmin.index10`
+
+### Helper untuk Sidebar (otomatis sesuai role)
+
+Di Blade (mis. `components/sidebar.blade.php`) gunakan:
+
+```php
+@php
+  $prefix = auth()->check() ? auth()->user()->role : 'guest';
+  $name = fn($n) => $prefix.'.index'.($n === 1 ? '' : $n);
+@endphp
+
+<ul class="sidebar-submenu">
+  <li><a href="{{ route($name(1)) }}">AI</a></li>
+  <li><a href="{{ route($name(2)) }}">CRM</a></li>
+  <li><a href="{{ route($name(3)) }}">eCommerce</a></li>
+  <li><a href="{{ route($name(4)) }}">Cryptocurrency</a></li>
+  <li><a href="{{ route($name(5)) }}">Investment</a></li>
+  <li><a href="{{ route($name(6)) }}">LMS</a></li>
+  <li><a href="{{ route($name(7)) }}">NFT & Gaming</a></li>
+  <li><a href="{{ route($name(8)) }}">Medical</a></li>
+  <li><a href="{{ route($name(9)) }}">Analytics</a></li>
+  <li><a href="{{ route($name(10)) }}">POS & Inventory</a></li>
+</ul>
+```
+
+> Pastikan user sudah login, jika belum login jangan render menu role.
+
+---
+
+## 7) Auth (Breeze) & Logout
+
+- **Login page**: `GET /login`
+- **Proses login**: `POST /login`
+- **Logout** WAJIB `POST /logout` (bukan GET). Contoh button:
+
+```blade
+<form method="POST" action="{{ route('logout') }}">
+  @csrf
+  <button type="submit" class="dropdown-item text-danger">Log Out</button>
+</form>
+```
+
+Jika klik logout diarahkan ke welcome, pastikan:
+- Tidak ada route `/` yang override setelah login
+- Middleware `auth` dan redirect role di `AuthenticationController@login` sudah sesuai
+
+---
+
+## 8) Build Production
+
+```bash
+npm run build
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+---
+
+## 9) Git & Remote
+
+Inisialisasi Git (jika belum):
+
+```bash
+git init
+```
+
+Tambahkan remote:
+
+```bash
+git remote add origin https://github.com/<username>/<repo>.git
+```
+
+Simpan perubahan pertama:
+
+```bash
+git add .
+git commit -m "Initial commit: Starter v1.2"
+git branch -M main
+git push -u origin main
+```
+
+---
+
+## 10) Troubleshooting
+
+- **`Route [index2] not defined`**  
+  Pastikan:
+  - Sidebar pakai nama route sesuai role (`admin.index2`, `finance.index2`, `superadmin.index2`) atau helper `$name(2)` di atas.
+  - Route-group sudah di-load dan tidak di-comment.
+  - Cache route belum “membeku”: jalankan `php artisan route:clear`.
+
+- **`MethodNotAllowedHttpException` saat /logout**  
+  Logout wajib `POST`. Pastikan tombol logout pakai `<form method="POST">` + `@csrf`.
+
+- **Setelah zip & pindah server**  
+  Tetap jalankan: `composer install`, `npm install`, `php artisan key:generate`, set `.env`, `php artisan migrate --seed`. 
+  Jangan reinstall Breeze kalau sudah ada—cukup jalankan dependency & env saja.
+
+---
+
+## Struktur Direktori Penting
+
+```
+app/
+└── Http/
+│   └── Controllers/
+│         └── _admin/
+│             └── AdminDashboardController.php
+│         ├── _finance/
+│             └── FinanceDashboardController.php
+│         └──_superadmin/
+│             └── SuperadminDashboardController.php
+resources/
+└── views/
+│   └── _admin/
+│        └── dashboard/
+│            └── index.blade.php
+│            ├── index2.blade.php
+│            ├── ...
+│            └── index10.blade.php
+│   ├── _finance/
+│        └── dashboard/
+│            └──index.blade.php
+│            ├── index2.blade.php
+│            ├── ...
+│            └── index10.blade.php
+    └── _superadmin/
+│        └── dashboard/
+│            └── index.blade.php
+│            ├── index2.blade.php
+│            ├── ...
+│            └── index10.blade.php
+routes/
+└── web.php
+```
+
+---
+
+## Lisensi
+
+Tidak ditentukan.
