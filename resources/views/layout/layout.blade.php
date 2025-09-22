@@ -32,7 +32,15 @@
 
     <!-- ..::  scripts  start ::.. -->
     <x-script  script='{!! isset($script) ? $script : "" !!}' />
+    @stack('scripts')
     <!-- ..::  scripts  end ::.. -->
+
+    {{-- Alert Success --}}
+    @if(session('success'))
+        <script>
+            alert("{{ session('success') }}");
+        </script>
+    @endif
 
 </body>
 

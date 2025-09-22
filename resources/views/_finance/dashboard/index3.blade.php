@@ -8,6 +8,170 @@
 @section('content')
 
             <div class="row gy-4">
+
+                <div class="col-xxl-6">
+                    <div class="card h-100">
+                        <div class="card-body p-24">
+                            <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
+                                <h6 class="mb-2 fw-bold text-lg mb-0">Komisi Traveler</h6>
+                                <a  href="javascript:void(0)" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
+                                    View All
+                                    <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
+                                </a>
+                            </div>
+                            <div>
+                                <form method="GET">
+                                    <div class="d-flex gap-2 mb-3">
+                                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search" class="form-control">
+                                        <button type="submit" class="btn btn-primary">Cari</button>
+                                    </div>
+
+                                    <div class="btn-group mb-3" role="group">
+                                        <input type="radio" class="btn-check" name="status" id="btnradio1" value="" {{ request('status') == '' ? 'checked' : '' }} onchange="this.form.submit()">
+                                        <label class="btn btn-outline-primary-600 px-20 py-11 radius-8" for="btnradio1">Semua</label>
+
+                                        <input type="radio" class="btn-check" name="status" id="btnradio2" value="approved" {{ request('status') == 'approved' ? 'checked' : '' }} onchange="this.form.submit()">
+                                        <label class="btn btn-outline-success-600 px-20 py-11" for="btnradio2">Tervalidasi</label>
+
+                                        <input type="radio" class="btn-check" name="status" id="btnradio3" value="pending" {{ request('status') == 'pending' ? 'checked' : '' }} onchange="this.form.submit()">
+                                        <label class="btn btn-outline-warning-600 px-20 py-11 radius-8" for="btnradio3">Belum Divalidasi</label>
+                                    </div>
+                                </form>
+                            <div class="table-responsive scroll-sm">
+                                <table class="table bordered-table mb-0 table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">ID Transaksi </th>
+                                            <th scope="col">Tanggal</th>
+                                            <th scope="col" class="text-center">Status</th>
+                                            <th scope="col">Total Transaksi</th>
+                                            <th scope="col">Pembayaran</th>
+                                            <th scope="col" class="text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($commissions as $i => $trx)
+                                        <tr>
+                                            <td>{{ $commissions->firstItem() + $i }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ asset('assets/images/product/product-img1.png') }}" 
+                                                        alt="" class="flex-shrink-0 me-12 radius-8 me-12">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="text-md mb-0 fw-normal">{{ $trx->traveler->name ?? '-' }}</h6>
+                                                        <span class="text-sm text-secondary-light fw-normal">{{ $trx->traveler->username ?? '-' }}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>#{{ $trx->id }}</td>
+                                            <td>{{ $trx->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                <span class="px-24 py-4 rounded-pill fw-medium text-sm
+                                                    @if($trx->payment_status == 'approved') bg-success-focus text-success-main
+                                                    @elseif($trx->payment_status == 'pending') bg-warning-focus text-warning-main
+                                                    @else bg-danger-focus text-danger-main @endif">
+                                                    {{ ucfirst($trx->payment_status) }}
+                                                </span>
+                                            </td>
+                                            <td>{{ number_format($trx->total_price, 0, ',', '.') }}</td>
+                                            <td>{{ $trx->paymentMethod->name ?? '-' }}</td>
+                                            <td class="text-center">
+                                                @if($trx->payment_status !== 'approved')
+                                                    <form action="{{ route('commissions.validate', $trx->id) }}" method="POST" onsubmit="return confirm('Yakin ingin memvalidasi transaksi ini?')">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            Validasi
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <div class="d-flex align-items-center justify-content-center gap-2">
+                                                        {{-- Detail --}}
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#commissionDetailModal{{ $trx->id }}">
+                                                            <iconify-icon icon="mdi:eye" class="text-primary" style="font-size: 28px;"></iconify-icon>
+                                                        </a>
+
+                                                        {{-- Delete --}}
+                                                        <form action="{{ route('commissions.destroy', $trx->id) }}" method="POST" onsubmit="return confirm('Hapus data komisi ini?')" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn p-0 border-0 bg-transparent">
+                                                                <iconify-icon icon="mdi:trash" class="text-danger" style="font-size: 28px;"></iconify-icon>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+
+                                                    {{-- Modal Detail --}}
+                                                    <div class="modal fade" id="commissionDetailModal{{ $trx->id }}" tabindex="-1" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Detail Komisi Traveler</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <ul class="list-group list-group-flush">
+                                                                        <li class="list-group-item">
+                                                                            <strong>Traveler:</strong> {{ $trx->traveler->name ?? '-' }}
+                                                                        </li>
+                                                                        <li class="list-group-item">
+                                                                            <strong>ID Transaksi:</strong> #{{ $trx->id }}
+                                                                        </li>
+                                                                        <li class="list-group-item">
+                                                                            <strong>Tanggal:</strong> {{ $trx->created_at->format('d M Y') }}
+                                                                        </li>
+                                                                        <li class="list-group-item">
+                                                                            <strong>Status:</strong> {{ ucfirst($trx->payment_status) }}
+                                                                        </li>
+                                                                        <li class="list-group-item">
+                                                                            <strong>Total Transaksi:</strong> Rp{{ number_format($trx->total_price,0,',','.') }}
+                                                                        </li>
+                                                                        <li class="list-group-item">
+                                                                            <strong>Pembayaran:</strong> {{ $trx->paymentMethod->name ?? '-' }}
+                                                                        </li>
+                                                                        <li class="list-group-item text-center">
+                                                                            <strong>Bukti Pembayaran:</strong><br>
+                                                                            @php
+                                                                                $proofPath = 'payment_proof/komisi_'.$trx->id;
+                                                                                $proofFile = null;
+                                                                                foreach(['jpg','jpeg','png','pdf'] as $ext){
+                                                                                    if(file_exists(public_path('storage/'.$proofPath.'.'.$ext))){
+                                                                                        $proofFile = asset('storage/'.$proofPath.'.'.$ext);
+                                                                                        break;
+                                                                                    }
+                                                                                }
+                                                                            @endphp
+                                                                            @if($proofFile)
+                                                                                <img src="{{ $proofFile }}" alt="Payment Proof" class="img-fluid rounded mt-2" style="max-height:300px;">
+                                                                            @else
+                                                                                <img src="{{ asset('assets/images/card-component/card-img1.png') }}" alt="No Proof" class="img-fluid rounded mt-2" style="max-height:300px;">
+                                                                            @endif
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="8" class="text-center">Tidak ada data</td>
+                                        </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                                <div class="mt-3">
+                                    {{ $commissions->withQueryString()->links('vendor.pagination.custom') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="col-xxl-9">
                     <div class="card radius-8 border-0">
                         <div class="row">
@@ -525,119 +689,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xxl-6">
-                    <div class="card h-100">
-                        <div class="card-body p-24">
-                            <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
-                                <h6 class="mb-2 fw-bold text-lg mb-0">Top Selling Product</h6>
-                                <a  href="javascript:void(0)" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                                    View All
-                                    <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                                </a>
-                            </div>
-                            <div class="table-responsive scroll-sm">
-                                <table class="table bordered-table mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Items</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Discount </th>
-                                            <th scope="col">Sold</th>
-                                            <th scope="col" class="text-center">Total Orders</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <img src="{{ asset('assets/images/product/product-img1.png') }}" alt="" class="flex-shrink-0 me-12 radius-8 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-md mb-0 fw-normal">Blue t-shirt</h6>
-                                                        <span class="text-sm text-secondary-light fw-normal">Fashion</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>$500.00</td>
-                                            <td>15%</td>
-                                            <td>300</td>
-                                            <td class="text-center">
-                                                <span class="bg-success-focus text-success-main px-32 py-4 rounded-pill fw-medium text-sm">70</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <img src="{{ asset('assets/images/product/product-img2.png') }}" alt="" class="flex-shrink-0 me-12 radius-8 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-md mb-0 fw-normal">Nike Air Shoe</h6>
-                                                        <span class="text-sm text-secondary-light fw-normal">Fashion</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>$150.00</td>
-                                            <td>N/A</td>
-                                            <td>200</td>
-                                            <td class="text-center">
-                                                <span class="bg-success-focus text-success-main px-32 py-4 rounded-pill fw-medium text-sm">70</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <img src="{{ asset('assets/images/product/product-img3.png') }}" alt="" class="flex-shrink-0 me-12 radius-8 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-md mb-0 fw-normal">Woman Dresses</h6>
-                                                        <span class="text-sm text-secondary-light fw-normal">Fashion</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>$300.00</td>
-                                            <td>$50.00</td>
-                                            <td>1500</td>
-                                            <td class="text-center">
-                                                <span class="bg-success-focus text-success-main px-32 py-4 rounded-pill fw-medium text-sm">70</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <img src="{{ asset('assets/images/product/product-img4.png') }}" alt="" class="flex-shrink-0 me-12 radius-8 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-md mb-0 fw-normal">Smart Watch</h6>
-                                                        <span class="text-sm text-secondary-light fw-normal">Fashion</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>$400.00</td>
-                                            <td>$50.00</td>
-                                            <td>700</td>
-                                            <td class="text-center">
-                                                <span class="bg-success-focus text-success-main px-32 py-4 rounded-pill fw-medium text-sm">70</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <img src="{{ asset('assets/images/product/product-img5.png') }}" alt="" class="flex-shrink-0 me-12 radius-8 me-12">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="text-md mb-0 fw-normal">Hoodie Rose</h6>
-                                                        <span class="text-sm text-secondary-light fw-normal">Fashion</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>$300.00</td>
-                                            <td>25%</td>
-                                            <td>500</td>
-                                            <td class="text-center">
-                                                <span class="bg-success-focus text-success-main px-32 py-4 rounded-pill fw-medium text-sm">70</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
                 <div class="col-xxl-6">
                     <div class="card h-100">
                         <div class="card-body p-24">

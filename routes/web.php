@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AiapplicationController;
@@ -24,10 +25,10 @@ use App\Http\Controllers\_superadmin\SuperadminDashboardController;
 
 
 // ------------------- AUTHENTICATION (Breeze + Custom) -------------------
-Route::get('/login', [AuthenticationController::class, 'signIn'])->name('login');
-Route::post('/login', [AuthenticationController::class, 'login']);
-Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
-Route::get('/register', [AuthenticationController::class, 'signUp']);
+Route::get('/login', [AuthenticatedSessionController::class, 'signIn'])->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'login']);
+Route::post('/logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
+Route::get('/register', [AuthenticatedSessionController::class, 'signUp']);
 Route::get('/logoutnih', function () {
     Auth::logout();
     request()->session()->invalidate();
@@ -79,11 +80,37 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 // --------------------------------------------------- FINANCE -------------------------------------------------------
 Route::middleware(['auth', 'role:finance'])->prefix('finance')->group(function () {
     Route::get('/dashboard', [FinanceDashboardController::class, 'index'])->name('finance.index');
+
     Route::get('/dashboard2', [FinanceDashboardController::class, 'index2'])->name('finance.index2');
+    // Buy Transaction Delete
+    Route::delete('/finance/buy-transactions/{id}', [FinanceDashboardController::class, 'destroyBuy'])
+        ->name('finance.buy.destroy');
+    // Send Transaction Delete
+    Route::delete('/finance/send-transactions/{id}', [FinanceDashboardController::class, 'destroySend'])
+        ->name('finance.send.destroy');
+
     Route::get('/dashboard3', [FinanceDashboardController::class, 'index3'])->name('finance.index3');
+    Route::post('/commissions/{id}/validate', [FinanceDashboardController::class, 'validateCommission'])
+    ->name('commissions.validate');
+    Route::delete('/{id}', [FinanceDashboardController::class, 'destroy'])->name('commissions.destroy');
+    
     Route::get('/dashboard4', [FinanceDashboardController::class, 'index4'])->name('finance.index4');
+    Route::get('/transactions/{id}', [FinanceDashboardController::class, 'show'])
+        ->name('finance.transactions.show');
+
+
     Route::get('/dashboard5', [FinanceDashboardController::class, 'index5'])->name('finance.index5');
+    Route::put('/finance/refunds/{id}', [FinanceDashboardController::class, 'updateRefund'])->name('finance.refund.update');
+
     Route::get('/dashboard6', [FinanceDashboardController::class, 'index6'])->name('finance.index6');
+    Route::post('/update-profile', [FinanceDashboardController::class, 'updateProfile'])->name('finance.updateProfile');
+    Route::post('/update-password', [FinanceDashboardController::class, 'updatePassword'])->name('finance.updatePassword');
+    Route::post('/update-profile-image', [FinanceDashboardController::class, 'updateProfileImage'])
+    ->name('finance.updateProfileImage');
+    Route::post('/finance/update-idcard', [FinanceDashboardController::class, 'updateIdCard'])->name('finance.updateIdCard');
+Route::post('/finance/update-passport', [FinanceDashboardController::class, 'updatePassport'])->name('finance.updatePassport');
+
+
     Route::get('/dashboard7', [FinanceDashboardController::class, 'index7'])->name('finance.index7');
     Route::get('/dashboard8', [FinanceDashboardController::class, 'index8'])->name('finance.index8');
     Route::get('/dashboard9', [FinanceDashboardController::class, 'index9'])->name('finance.index9');

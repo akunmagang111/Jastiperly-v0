@@ -1,978 +1,367 @@
 @extends('layout.layout')
 @php
-    $title='Dashboard';
-    $subTitle = 'LMS / Learning System';
-    $script = '<script>
-                    // ===================== Average Enrollment Rate Start =============================== 
-                    function createChartTwo(chartId, color1, color2) {
-                        var options = {
-                            series: [{
-                                name: "series1",
-                                data: [48, 35, 55, 32, 48, 30, 55, 50, 57]
-                            }, {
-                                name: "series2",
-                                data: [12, 20, 15, 26, 22, 60, 40, 48, 25]
-                            }],
-                            legend: {
-                                show: false
-                            },
-                            chart: {
-                                type: "area",
-                                width: "100%",
-                                height: 270,
-                                toolbar: {
-                                    show: false
-                                },
-                                padding: {
-                                    left: 0,
-                                    right: 0,
-                                    top: 0,
-                                    bottom: 0
-                                }
-                            },
-                            dataLabels: {
-                                enabled: false
-                            },
-                            stroke: {
-                                curve: "smooth",
-                                width: 3,
-                                colors: [color1, color2], // Use two colors for the lines
-                                lineCap: "round"
-                            },
-                            grid: {
-                                show: true,
-                                borderColor: "#D1D5DB",
-                                strokeDashArray: 1,
-                                position: "back",
-                                xaxis: {
-                                    lines: {
-                                        show: false
-                                    }
-                                },
-                                yaxis: {
-                                    lines: {
-                                        show: true
-                                    }
-                                },
-                                row: {
-                                    colors: undefined,
-                                    opacity: 0.5
-                                },
-                                column: {
-                                    colors: undefined,
-                                    opacity: 0.5
-                                },
-                                padding: {
-                                    top: -20,
-                                    right: 0,
-                                    bottom: -10,
-                                    left: 0
-                                },
-                            },
-                            fill: {
-                                type: "gradient",
-                                colors: [color1, color2], // Use two colors for the gradient
-                                // gradient: {
-                                //     shade: "light",
-                                //     type: "vertical",
-                                //     shadeIntensity: 0.5,
-                                //     gradientToColors: [`${color1}`, `${color2}00`], // Bottom gradient colors with transparency
-                                //     inverseColors: false,
-                                //     opacityFrom: .6,
-                                //     opacityTo: 0.3,
-                                //     stops: [0, 100],
-                                // },
-                                gradient: {
-                                    shade: "light",
-                                    type: "vertical",
-                                    shadeIntensity: 0.5,
-                                    gradientToColors: [undefined, `${color2}00`], // Apply transparency to both colors
-                                    inverseColors: false,
-                                    opacityFrom: [0.4, 0.4], // Starting opacity for both colors
-                                    opacityTo: [0.3, 0.3], // Ending opacity for both colors
-                                    stops: [0, 100],
-                                },
-                            },
-                            markers: {
-                                colors: [color1, color2], // Use two colors for the markers
-                                strokeWidth: 3,
-                                size: 0,
-                                hover: {
-                                    size: 10
-                                }
-                            },
-                            xaxis: {
-                                labels: {
-                                    show: false
-                                },
-                                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                                tooltip: {
-                                    enabled: false
-                                },
-                                labels: {
-                                    formatter: function(value) {
-                                        return value;
-                                    },
-                                    style: {
-                                        fontSize: "14px"
-                                    }
-                                }
-                            },
-                            yaxis: {
-                                labels: {
-                                    formatter: function(value) {
-                                        return "$" + value + "k";
-                                    },
-                                    style: {
-                                        fontSize: "14px"
-                                    }
-                                },
-                            },
-                            tooltip: {
-                                x: {
-                                    format: "dd/MM/yy HH:mm"
-                                }
+    $title='View Profile';
+    $subTitle = 'View Profile';
+    $script ='<script>
+                    // ======================== Upload Image Start =====================
+                    function readURL(input) {
+                        if (input.files && input.files[0]) {
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                $("#imagePreview").css("background-image", "url(" + e.target.result + ")");
+                                $("#imagePreview").hide();
+                                $("#imagePreview").fadeIn(650);
                             }
-                        };
-
-                        var chart = new ApexCharts(document.querySelector(`#${chartId}`), options);
-                        chart.render();
+                            reader.readAsDataURL(input.files[0]);
+                        }
                     }
-
-                    createChartTwo("enrollmentChart", "#45B369", "#487fff");
-                    // ===================== Average Enrollment Rate End =============================== 
-
-
-                    // ================================ Users Overview Donut chart Start ================================ 
-                    var options = {
-                        series: [500, 500, 500],
-                        colors: ["#FF9F29", "#487FFF", "#E4F1FF"],
-                        labels: ["Active", "New", "Total"],
-                        legend: {
-                            show: false
-                        },
-                        chart: {
-                            type: "donut",
-                            height: 270,
-                            sparkline: {
-                                enabled: true // Remove whitespace
-                            },
-                            margin: {
-                                top: 0,
-                                right: 0,
-                                bottom: 0,
-                                left: 0
-                            },
-                            padding: {
-                                top: 0,
-                                right: 0,
-                                bottom: 0,
-                                left: 0
-                            }
-                        },
-                        stroke: {
-                            width: 0,
-                        },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        responsive: [{
-                            breakpoint: 480,
-                            options: {
-                                chart: {
-                                    width: 200
-                                },
-                                legend: {
-                                    position: "bottom"
-                                }
-                            }
-                        }],
-                    };
-
-                    var chart = new ApexCharts(document.querySelector("#userOverviewDonutChart"), options);
-                    chart.render();
-                    // ================================ Users Overview Donut chart End ================================ 
-
-                    // ================================ Client Payment Status chart End ================================ 
-                    var options = {
-                        series: [{
-                            name: "Net Profit",
-                            data: [44, 100, 40, 56, 30, 58, 50]
-                        }, {
-                            name: "Free Cash",
-                            data: [60, 120, 60, 90, 50, 95, 90]
-                        }],
-                        colors: ["#45B369", "#FF9F29"],
-                        labels: ["Active", "New", "Total"],
-
-                        legend: {
-                            show: false
-                        },
-                        chart: {
-                            type: "bar",
-                            height: 420,
-                            toolbar: {
-                                show: false
-                            },
-                        },
-                        grid: {
-                            show: true,
-                            borderColor: "#D1D5DB",
-                            strokeDashArray: 4, // Use a number for dashed style
-                            position: "back",
-                        },
-                        plotOptions: {
-                            bar: {
-                                borderRadius: 4,
-                                columnWidth: 8,
-                            },
-                        },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        states: {
-                            hover: {
-                                filter: {
-                                    type: "none"
-                                }
-                            }
-                        },
-                        stroke: {
-                            show: true,
-                            width: 0,
-                            colors: ["transparent"]
-                        },
-                        xaxis: {
-                            categories: ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"],
-                        },
-                        fill: {
-                            opacity: 1,
-                            width: 18,
-                        },
-                    };
-
-                    var chart = new ApexCharts(document.querySelector("#paymentStatusChart"), options);
-                    chart.render();
-                    // ================================ Client Payment Status chart End ================================ 
-
-                    // ================================ Aminated Radial Progress Bar Start ================================ 
-                    $("svg.radial-progress").each(function(index, value) {
-                        $(this).find($("circle.complete")).removeAttr("style");
+                    $("#imageUpload").change(function() {
+                        readURL(this);
                     });
+                    // ======================== Upload Image End =====================
 
-                    // Activate progress animation on scroll
-                    $(window).scroll(function() {
-                        $("svg.radial-progress").each(function(index, value) {
-                            // If svg.radial-progress is approximately 25% vertically into the window when scrolling from the top or the bottom
-                            if (
-                                $(window).scrollTop() > $(this).offset().top - ($(window).height() * 0.75) &&
-                                $(window).scrollTop() < $(this).offset().top + $(this).height() - ($(window).height() * 0.25)
-                            ) {
-                                // Get percentage of progress
-                                percent = $(value).data("percentage");
-                                // Get radius of the svg"s circle.complete
-                                radius = $(this).find($("circle.complete")).attr("r");
-                                // Get circumference (2πr)
-                                circumference = 2 * Math.PI * radius;
-                                // Get stroke-dashoffset value based on the percentage of the circumference
-                                strokeDashOffset = circumference - ((percent * circumference) / 100);
-                                // Transition progress for 1.25 seconds
-                                $(this).find($("circle.complete")).animate({
-                                    "stroke-dashoffset": strokeDashOffset
-                                }, 1250);
+                    // ================== Password Show Hide Js Start ==========
+                    function initializePasswordToggle(toggleSelector) {
+                        $(toggleSelector).on("click", function() {
+                            $(this).toggleClass("ri-eye-off-line");
+                            var input = $($(this).attr("data-toggle"));
+                            if (input.attr("type") === "password") {
+                                input.attr("type", "text");
+                            } else {
+                                input.attr("type", "password");
                             }
                         });
-                    }).trigger("scroll");
-                    // ================================ Aminated Radial Progress Bar End ================================ 
-                    </script>';
+                    }
+                    // Call the function
+                    initializePasswordToggle(".toggle-password");
+                    // ========================= Password Show Hide Js End ===========================
+            </script>';
 @endphp
 
 @section('content')
 
-    <div class="row gy-4 mb-24">
-        <!-- ======================= First Row Cards Start =================== -->
-        <div class="col-xxl-8">
-            <div class="card radius-8 border-0 p-20">
-                <div class="row gy-4">
-                    <div class="col-xxl-4">
-                        <div class="card p-3 radius-8 shadow-none bg-gradient-dark-start-1 mb-12">
-                            <div class="card-body p-0">
-                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-0">
-                                    <div class="d-flex align-items-center gap-2 mb-12">
-                                        <span class="mb-0 w-48-px h-48-px bg-base text-pink text-2xl flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
-                                            <i class="ri-group-fill"></i>
-                                        </span>
-                                        <div>
-                                            <span class="mb-0 fw-medium text-secondary-light text-lg">Total Students</span>
-                                        </div>
-                                    </div>
-                                </div>
+            <div class="row gy-4">
+                <div class="col-lg-4">
+                    <div class="user-grid-card position-relative border radius-16 overflow-hidden bg-base h-100">
+                        <img src="{{ asset('assets/images/card/card-bg.png') }}" alt="" class="w-100 object-fit-cover">
+                        <div class="pb-24 ms-16 mb-24 me-16  mt--100">
+                            <div class="text-center border border-top-0 border-start-0 border-end-0">
+                                 <img id="profileImage"
+                                    src="{{ $user->detail->account_image
+                                        ? asset('storage/'.$user->detail->account_image)
+                                        : asset('assets/images/user-grid/user-grid-img14.png') }}"
+                                    alt="Profile"
+                                    class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover"
+                                    onerror="this.onerror=null;this.src='{{ asset('assets/images/user-grid/user-grid-img14.png') }}'">
 
-                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-8">
-                                    <h5 class="fw-semibold mb-0">15,000</h5>
-                                    <p class="text-sm mb-0 d-flex align-items-center gap-8">
-                                        <span class="text-white px-1 rounded-2 fw-medium bg-success-main text-sm">+2.5k</span>
-                                        This Month
-                                    </p>
-                                </div>
+                                <h6 class="mb-0 mt-16">{{ $user->detail->name ?? $user->name }}</h6>
+                                <span class="text-secondary-light mb-16">{{ $user->email }}</span>
                             </div>
-                        </div>
-                        <div class="card p-3 radius-8 shadow-none bg-gradient-dark-start-2 mb-12">
-                            <div class="card-body p-0">
-                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-0">
-                                    <div class="d-flex align-items-center gap-2 mb-12">
-                                        <span class="mb-0 w-48-px h-48-px bg-base text-purple text-2xl flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
-                                            <i class="ri-youtube-fill"></i>
+                            <div class="mt-24">
+                                <h6 class="text-xl mb-16">Personal Info</h6>
+                                <ul>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Full Name</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->detail->name ?? $user->name }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Email</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->email }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Phone Number</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->detail->phone ?? '-' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Address</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->detail->address ?? '-' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Date of Birth</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->detail->date_birth ?? '-' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Gender</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->detail->gender ?? '-' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Role</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ ucfirst($user->role) }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Account Status</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ ucfirst($user->account_status) }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Bank Name</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->detail->bank_name ?? '-' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Bank Number</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->detail->bank_number ?? '-' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-center gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Verified</span>
+                                        <span class="w-70 text-secondary-light fw-medium">: {{ $user->detail->verified_type ? 'Yes' : 'No' }}</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">ID Card</span>
+                                        <span class="w-70 text-secondary-light fw-medium">
+                                            <img src="{{ $user->detail->id_card_image 
+                                                ? asset('storage/'.$user->detail->id_card_image) 
+                                                : asset('assets/images/card-component/card-img1.png') }}"
+                                                alt="ID Card"
+                                                class="border border-1 w-150-px h-100-px rounded-3 object-fit-cover">
                                         </span>
-                                        <div>
-                                            <span class="mb-0 fw-medium text-secondary-light text-lg">Total Courses</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                    </li>
 
-                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-8">
-                                    <h5 class="fw-semibold mb-0">420</h5>
-                                    <p class="text-sm mb-0 d-flex align-items-center gap-8">
-                                        <span class="text-white px-1 rounded-2 fw-medium bg-success-main text-sm">+30</span>
-                                        This Month
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card p-3 radius-8 shadow-none bg-gradient-dark-start-3 mb-0">
-                            <div class="card-body p-0">
-                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-0">
-                                    <div class="d-flex align-items-center gap-2 mb-12">
-                                        <span class="mb-0 w-48-px h-48-px bg-base text-info text-2xl flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
-                                            <i class="ri-money-dollar-circle-fill"></i>
+                                    <li class="d-flex align-items-start gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Passport</span>
+                                        <span class="w-70 text-secondary-light fw-medium">
+                                            <img src="{{ $user->detail->pasport_image 
+                                                ? asset('storage/'.$user->detail->pasport_image) 
+                                                : asset('assets/images/card-component/card-img1.png') }}"
+                                                alt="Passport"
+                                                class="border border-1 w-150-px h-100-px rounded-3 object-fit-cover">
                                         </span>
-                                        <div>
-                                            <span class="mb-0 fw-medium text-secondary-light text-lg">Overall Revenue</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                    </li>
 
-                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-8">
-                                    <h5 class="fw-semibold mb-0">$50,000</h5>
-                                    <p class="text-sm mb-0 d-flex align-items-center gap-8">
-                                        <span class="text-white px-1 rounded-2 fw-medium bg-success-main text-sm">+1.5k</span>
-                                        This Month
-                                    </p>
-                                </div>
+                                    <li class="d-flex align-items-start gap-1 mb-12">
+                                        <span class="w-30 text-md fw-semibold text-primary-light">Account Image</span>
+                                        <span class="w-70 text-secondary-light fw-medium">
+                                            <img src="{{ $user->detail->account_image 
+                                                ? asset('storage/'.$user->detail->account_image) 
+                                                : asset('assets/images/user-grid/user-grid-img14.png') }}"
+                                                alt="Account Image"
+                                                class="border border-1 w-150-px h-100-px rounded-3 object-fit-cover">
+                                        </span>
+                                    </li>
+                                </ul>
                             </div>
+
                         </div>
                     </div>
-                    <div class="col-xxl-8">
-                        <div class="card-body p-0">
-                            <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                                <h6 class="mb-2 fw-bold text-lg">Average Enrollment Rate
-                                </h6>
-                                <div class="">
-                                    <select class="form-select form-select-sm w-auto bg-base border text-secondary-light">
-                                        <option>Yearly</option>
-                                        <option>Monthly</option>
-                                        <option>Weekly</option>
-                                        <option>Today</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <ul class="d-flex flex-wrap align-items-center justify-content-center mt-3 gap-3">
-                                <li class="d-flex align-items-center gap-2">
-                                    <span class="w-12-px h-12-px rounded-circle bg-primary-600"></span>
-                                    <span class="text-secondary-light text-sm fw-semibold">Paid Course:
-                                        <span class="text-primary-light fw-bold">350</span>
-                                    </span>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card h-100">
+                        <div class="card-body p-24">
+                            <ul class="nav border-gradient-tab nav-pills mb-20 d-inline-flex" id="pills-tab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link d-flex align-items-center px-24 active" id="pills-edit-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-edit-profile" type="button" role="tab" aria-controls="pills-edit-profile" aria-selected="true">
+                                        Edit Profile
+                                    </button>
                                 </li>
-                                <li class="d-flex align-items-center gap-2">
-                                    <span class="w-12-px h-12-px rounded-circle bg-success-main"></span>
-                                    <span class="text-secondary-light text-sm fw-semibold">Free Course:
-                                        <span class="text-primary-light fw-bold">70</span>
-                                    </span>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link d-flex align-items-center px-24" id="pills-change-passwork-tab" data-bs-toggle="pill" data-bs-target="#pills-change-passwork" type="button" role="tab" aria-controls="pills-change-passwork" aria-selected="false" tabindex="-1">
+                                        Change Password
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link d-flex align-items-center px-24" id="pills-notification-tab" data-bs-toggle="pill" data-bs-target="#pills-notification" type="button" role="tab" aria-controls="pills-notification" aria-selected="false" tabindex="-1">
+                                        Notification Settings
+                                    </button>
                                 </li>
                             </ul>
-                            <div class="mt-40">
-                                <div id="enrollmentChart" class="apexcharts-tooltip-style-1"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xxl-4 col-md-6">
-            <div class="card h-100 radius-8 border-0">
-                <div class="card-body p-24 d-flex flex-column justify-content-between gap-8">
-                    <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
-                        <h6 class="mb-2 fw-bold text-lg mb-0">Traffic Sources</h6>
-                        <select class="form-select form-select-sm w-auto bg-base border text-secondary-light">
-                            <option>Yearly</option>
-                            <option>Monthly</option>
-                            <option>Weekly</option>
-                            <option>Today</option>
-                        </select>
-                    </div>
-                    <div id="userOverviewDonutChart" class="margin-16-minus y-value-left apexcharts-tooltip-z-none"></div>
 
-                    <ul class="d-flex flex-wrap align-items-center justify-content-between mt-3 gap-3">
-                        <li class="d-flex flex-column gap-8">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="w-12-px h-12-px rounded-circle bg-warning-600"></span>
-                                <span class="text-secondary-light text-sm fw-semibold">Organic Search</span>
-                            </div>
-                            <span class="text-primary-light fw-bold">875</span>
-                        </li>
-                        <li class="d-flex flex-column gap-8">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="w-12-px h-12-px rounded-circle bg-success-600"></span>
-                                <span class="text-secondary-light text-sm fw-semibold">Referrals</span>
-                            </div>
-                            <span class="text-primary-light fw-bold">450</span>
-                        </li>
-                        <li class="d-flex flex-column gap-8">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="w-12-px h-12-px rounded-circle bg-primary-600"></span>
-                                <span class="text-secondary-light text-sm fw-semibold">Social Media</span>
-                            </div>
-                            <span class="text-primary-light fw-bold">4,305</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <!-- ======================= First Row Cards End =================== -->
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-edit-profile" role="tabpanel" aria-labelledby="pills-edit-profile-tab" tabindex="0">
+                                    <h6 class="text-md text-primary-light mb-16">Profile & Documents</h6>
+                                    <div class="row align-items-end">
+                                        {{-- Profile --}}
+                                        <div class="col-md-4 text-center">
+                                            <form action="{{ route('finance.updateProfileImage') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="mb-16 position-relative d-inline-block">
+                                                    <img src="{{ $user->detail->account_image 
+                                                        ? asset('storage/'.$user->detail->account_image) 
+                                                        : asset('assets/images/user-grid/user-grid-img14.png') }}"
+                                                        alt="Profile"
+                                                        class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
 
-        <!-- ================== Second Row Cards Start ======================= -->
-        <!-- Top Categories Card Start -->
-        <div class="col-xxl-4 col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                        <h6 class="mb-2 fw-bold text-lg mb-0">Top Categories</h6>
-                        <a href="javascript:void(0)" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                            View All
-                            <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center gap-12">
-                            <div class="w-40-px h-40-px radius-8 flex-shrink-0 bg-info-50 d-flex justify-content-center align-items-center">
-                                <img src="{{ asset('assets/images/home-six/category-icon1.png') }}" alt="" class="">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-normal">Web Development</h6>
-                                <span class="text-sm text-secondary-light fw-normal">40+ Courses</span>
-                            </div>
-                        </div>
-                        <a href="#" class="w-24-px h-24-px bg-primary-50 text-primary-600 d-flex justify-content-center align-items-center text-lg bg-hover-primary-100 radius-4">
-                            <i class="ri-arrow-right-s-line"></i>
-                        </a>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center gap-12">
-                            <div class="w-40-px h-40-px radius-8 flex-shrink-0 bg-success-50 d-flex justify-content-center align-items-center">
-                                <img src="{{ asset('assets/images/home-six/category-icon2.png') }}" alt="" class="">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-normal">Graphic Design</h6>
-                                <span class="text-sm text-secondary-light fw-normal">40+ Courses</span>
-                            </div>
-                        </div>
-                        <a href="#" class="w-24-px h-24-px bg-primary-50 text-primary-600 d-flex justify-content-center align-items-center text-lg bg-hover-primary-100 radius-4">
-                            <i class="ri-arrow-right-s-line"></i>
-                        </a>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center gap-12">
-                            <div class="w-40-px h-40-px radius-8 flex-shrink-0 bg-lilac-50 d-flex justify-content-center align-items-center">
-                                <img src="{{ asset('assets/images/home-six/category-icon3.png') }}" alt="" class="">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-normal">UI/UX Design</h6>
-                                <span class="text-sm text-secondary-light fw-normal">40+ Courses</span>
-                            </div>
-                        </div>
-                        <a href="#" class="w-24-px h-24-px bg-primary-50 text-primary-600 d-flex justify-content-center align-items-center text-lg bg-hover-primary-100 radius-4">
-                            <i class="ri-arrow-right-s-line"></i>
-                        </a>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center gap-12">
-                            <div class="w-40-px h-40-px radius-8 flex-shrink-0 bg-warning-50 d-flex justify-content-center align-items-center">
-                                <img src="{{ asset('assets/images/home-six/category-icon4.png') }}" alt="" class="">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-normal">Digital Marketing</h6>
-                                <span class="text-sm text-secondary-light fw-normal">40+ Courses</span>
-                            </div>
-                        </div>
-                        <a href="#" class="w-24-px h-24-px bg-primary-50 text-primary-600 d-flex justify-content-center align-items-center text-lg bg-hover-primary-100 radius-4">
-                            <i class="ri-arrow-right-s-line"></i>
-                        </a>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center gap-12">
-                            <div class="w-40-px h-40-px radius-8 flex-shrink-0 bg-danger-50 d-flex justify-content-center align-items-center">
-                                <img src="{{ asset('assets/images/home-six/category-icon5.png') }}" alt="" class="">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-normal">3d Illustration & Art Design</h6>
-                                <span class="text-sm text-secondary-light fw-normal">40+ Courses</span>
-                            </div>
-                        </div>
-                        <a href="#" class="w-24-px h-24-px bg-primary-50 text-primary-600 d-flex justify-content-center align-items-center text-lg bg-hover-primary-100 radius-4">
-                            <i class="ri-arrow-right-s-line"></i>
-                        </a>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-0">
-                        <div class="d-flex align-items-center gap-12">
-                            <div class="w-40-px h-40-px radius-8 flex-shrink-0 bg-primary-50 d-flex justify-content-center align-items-center">
-                                <img src="{{ asset('assets/images/home-six/category-icon6.png') }}" alt="" class="">
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-normal">Logo Design</h6>
-                                <span class="text-sm text-secondary-light fw-normal">40+ Courses</span>
-                            </div>
-                        </div>
-                        <a href="#" class="w-24-px h-24-px bg-primary-50 text-primary-600 d-flex justify-content-center align-items-center text-lg bg-hover-primary-100 radius-4">
-                            <i class="ri-arrow-right-s-line"></i>
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <!-- Top Categories Card End -->
-
-        <!-- Instructor Card Start -->
-        <div class="col-xxl-4 col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                        <h6 class="mb-2 fw-bold text-lg mb-0">Top Instructors</h6>
-                        <a href="javascript:void(0)" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                            View All
-                            <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/users/user1.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Dianne Russell</h6>
-                                <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <div class="d-flex align-items-center gap-6 mb-1">
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                            </div>
-                            <span class="text-primary-light text-sm d-block text-end">25 Reviews</span>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/users/user2.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Wade Warren</h6>
-                                <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <div class="d-flex align-items-center gap-6 mb-1">
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                            </div>
-                            <span class="text-primary-light text-sm d-block text-end">25 Reviews</span>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/users/user3.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Albert Flores</h6>
-                                <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <div class="d-flex align-items-center gap-6 mb-1">
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                            </div>
-                            <span class="text-primary-light text-sm d-block text-end">25 Reviews</span>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/users/user4.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Bessie Cooper</h6>
-                                <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <div class="d-flex align-items-center gap-6 mb-1">
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                            </div>
-                            <span class="text-primary-light text-sm d-block text-end">25 Reviews</span>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/users/user5.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Arlene McCoy</h6>
-                                <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <div class="d-flex align-items-center gap-6 mb-1">
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                            </div>
-                            <span class="text-primary-light text-sm d-block text-end">25 Reviews</span>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between gap-3">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/users/user1.png') }}" alt="" class="w-40-px h-40-px rounded-circle flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Arlene McCoy</h6>
-                                <span class="text-sm text-secondary-light fw-medium">Agent ID: 36254</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <div class="d-flex align-items-center gap-6 mb-1">
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                                <span class="text-lg text-warning-600 d-flex line-height-1"><i class="ri-star-fill"></i></span>
-                            </div>
-                            <span class="text-primary-light text-sm d-block text-end">25 Reviews</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Instructor Card End -->
-
-        <!-- Student Progress Card Start -->
-        <div class="col-xxl-4 col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                        <h6 class="mb-2 fw-bold text-lg mb-0">Student"s Progress</h6>
-                        <a href="javascript:void(0)" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                            View All
-                            <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/home-six/student-img1.png') }}" alt="" class="w-40-px h-40-px radius-8 flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Theresa Webb</h6>
-                                <span class="text-sm text-secondary-light fw-medium">UI/UX Design Course</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <span class="text-primary-light text-sm d-block text-end">
-                                <svg class="radial-progress" data-percentage="33" viewBox="0 0 80 80">
-                                    <circle class="incomplete" cx="40" cy="40" r="35"></circle>
-                                    <circle class="complete" cx="40" cy="40" r="35" style="stroke-dashoffset: 39.58406743523136;"></circle>
-                                    <text class="percentage" x="50%" y="57%" transform="matrix(0, 1, -1, 0, 80, 0)">33</text>
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/home-six/student-img2.png') }}" alt="" class="w-40-px h-40-px radius-8 flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Robert Fox</h6>
-                                <span class="text-sm text-secondary-light fw-medium">Graphic Design Course</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <span class="text-primary-light text-sm d-block text-end">
-                                <svg class="radial-progress" data-percentage="70" viewBox="0 0 80 80">
-                                    <circle class="incomplete" cx="40" cy="40" r="35"></circle>
-                                    <circle class="complete" cx="40" cy="40" r="35" style="stroke-dashoffset: 39.58406743523136;"></circle>
-                                    <text class="percentage" x="50%" y="57%" transform="matrix(0, 1, -1, 0, 80, 0)">70</text>
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/home-six/student-img3.png') }}" alt="" class="w-40-px h-40-px radius-8 flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Guy Hawkins</h6>
-                                <span class="text-sm text-secondary-light fw-medium">Web developer Course</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <span class="text-primary-light text-sm d-block text-end">
-                                <svg class="radial-progress" data-percentage="80" viewBox="0 0 80 80">
-                                    <circle class="incomplete" cx="40" cy="40" r="35"></circle>
-                                    <circle class="complete" cx="40" cy="40" r="35" style="stroke-dashoffset: 39.58406743523136;"></circle>
-                                    <text class="percentage" x="50%" y="57%" transform="matrix(0, 1, -1, 0, 80, 0)">80</text>
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/home-six/student-img4.png') }}" alt="" class="w-40-px h-40-px radius-8 flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Cody Fisher</h6>
-                                <span class="text-sm text-secondary-light fw-medium">UI/UX Design Course</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <span class="text-primary-light text-sm d-block text-end">
-                                <svg class="radial-progress" data-percentage="20" viewBox="0 0 80 80">
-                                    <circle class="incomplete" cx="40" cy="40" r="35"></circle>
-                                    <circle class="complete" cx="40" cy="40" r="35" style="stroke-dashoffset: 39.58406743523136;"></circle>
-                                    <text class="percentage" x="50%" y="57%" transform="matrix(0, 1, -1, 0, 80, 0)">20</text>
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-24">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/home-six/student-img5.png') }}" alt="" class="w-40-px h-40-px radius-8 flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Jacob Jones</h6>
-                                <span class="text-sm text-secondary-light fw-medium">UI/UX Design Course</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <span class="text-primary-light text-sm d-block text-end">
-                                <svg class="radial-progress" data-percentage="40" viewBox="0 0 80 80">
-                                    <circle class="incomplete" cx="40" cy="40" r="35"></circle>
-                                    <circle class="complete" cx="40" cy="40" r="35" style="stroke-dashoffset: 39.58406743523136;"></circle>
-                                    <text class="percentage" x="50%" y="57%" transform="matrix(0, 1, -1, 0, 80, 0)">40</text>
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between gap-3 mb-0">
-                        <div class="d-flex align-items-center">
-                            <img src="{{ asset('assets/images/home-six/student-img6.png') }}" alt="" class="w-40-px h-40-px radius-8 flex-shrink-0 me-12 overflow-hidden">
-                            <div class="flex-grow-1">
-                                <h6 class="text-md mb-0 fw-medium">Darlene Robertson</h6>
-                                <span class="text-sm text-secondary-light fw-medium">UI/UX Design Course</span>
-                            </div>
-                        </div>
-                        <div class="">
-                            <span class="text-primary-light text-sm d-block text-end">
-                                <svg class="radial-progress" data-percentage="24" viewBox="0 0 80 80">
-                                    <circle class="incomplete" cx="40" cy="40" r="35"></circle>
-                                    <circle class="complete" cx="40" cy="40" r="35" style="stroke-dashoffset: 39.58406743523136;"></circle>
-                                    <text class="percentage" x="50%" y="57%" transform="matrix(0, 1, -1, 0, 80, 0)">24</text>
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Student Progress Card End -->
-        <!-- ================== Second Row Cards End ======================= -->
-
-        <!-- ================== Third Row Cards Start ======================= -->
-        <div class="col-xxl-8">
-            <div class="card h-100">
-                <div class="card-header">
-                    <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                        <h6 class="mb-2 fw-bold text-lg mb-0">Courses</h6>
-                        <a href="javascript:void(0)" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                            View All
-                            <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body p-24">
-                    <div class="table-responsive scroll-sm">
-                        <table class="table bordered-table mb-0">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Registered On</th>
-                                    <th scope="col">Instructors </th>
-                                    <th scope="col">Users</th>
-                                    <th scope="col">Enrolled</th>
-                                    <th scope="col">Price </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <span class="text-secondary-light">24 Jun 2024</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">Ronald Richards</span>
-                                    </td>
-                                    <td>
-                                        <div class="text-secondary-light">
-                                            <h6 class="text-md mb-0 fw-normal">3d Illustration &amp; Art Design</h6>
-                                            <span class="text-sm fw-normal">34 Lessons</span>
+                                                    <!-- Tombol Kamera -->
+                                                    <input type="file" name="profile_image" id="imageUpload" accept=".png, .jpg, .jpeg" hidden>
+                                                    <label for="imageUpload" 
+                                                        class="position-absolute bottom-0 end-0 w-32-px h-32-px d-flex justify-content-center align-items-center 
+                                                            bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle cursor-pointer">
+                                                        <iconify-icon icon="solar:camera-outline" class="icon"></iconify-icon>
+                                                    </label>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+                                            </form>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">257</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">$29.00</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="text-secondary-light">24 Jun 2024</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">Jerome Bell</span>
-                                    </td>
-                                    <td>
-                                        <div class="text-secondary-light">
-                                            <h6 class="text-md mb-0 fw-normal">Advanced JavaScript Development</h6>
-                                            <span class="text-sm fw-normal">20 Lessons</span>
+
+                                        {{-- ID Card --}}
+                                        <div class="col-md-4 text-center">
+                                            <form action="{{ route('finance.updateIdCard') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="mb-16 position-relative d-inline-block">
+                                                    <img src="{{ $user->detail->id_card_image 
+                                                        ? asset('storage/'.$user->detail->id_card_image) 
+                                                        : asset('assets/images/card-component/card-img1.png') }}"
+                                                        alt="ID Card"
+                                                        class="border border-1 w-150-px h-100-px rounded-3 object-fit-cover">
+
+                                                    <!-- Tombol Kamera -->
+                                                    <input type="file" name="id_card_image" id="idCardUpload" accept=".png, .jpg, .jpeg" hidden>
+                                                    <label for="idCardUpload" 
+                                                        class="position-absolute bottom-0 end-0 w-32-px h-32-px d-flex justify-content-center align-items-center 
+                                                            bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle cursor-pointer">
+                                                        <iconify-icon icon="solar:camera-outline" class="icon"></iconify-icon>
+                                                    </label>
+                                                </div>
+                                                {{-- Current Password --}}
+                                                <div class="mb-3">
+                                                    <label for="current_password" class="form-label">Current Password</label>
+                                                    <input type="password" name="current_password" id="current_password" class="form-control" required>
+                                                    @error('current_password')
+                                                        <div class="text-danger mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <button type="submit" class="btn btn-primary w-100">Update ID Card</button>
+                                            </form>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">375</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">$29.00</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="text-secondary-light">24 Jun 2024</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">Cody Fisher</span>
-                                    </td>
-                                    <td>
-                                        <div class="text-secondary-light">
-                                            <h6 class="text-md mb-0 fw-normal">Portrait Drawing Fundamentals </h6>
-                                            <span class="text-sm fw-normal">16 Lessons</span>
+
+                                        {{-- Passport --}}
+                                        <div class="col-md-4 text-center">
+                                            <form action="{{ route('finance.updatePassport') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="mb-16 position-relative d-inline-block">
+                                                    <img src="{{ $user->detail->pasport_image 
+                                                        ? asset('storage/'.$user->detail->pasport_image) 
+                                                        : asset('assets/images/card-component/card-img1.png') }}"
+                                                        alt="Passport"
+                                                        class="border border-1 w-150-px h-100-px rounded-3 object-fit-cover">
+
+                                                    <!-- Tombol Kamera -->
+                                                    <input type="file" name="pasport_image" id="passportUpload" accept=".png, .jpg, .jpeg" hidden>
+                                                    <label for="passportUpload" 
+                                                        class="position-absolute bottom-0 end-0 w-32-px h-32-px d-flex justify-content-center align-items-center 
+                                                            bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle cursor-pointer">
+                                                        <iconify-icon icon="solar:camera-outline" class="icon"></iconify-icon>
+                                                    </label>
+                                                </div>
+                                                {{-- Current Password --}}
+                                                <div class="mb-3">
+                                                    <label for="current_password" class="form-label">Current Password</label>
+                                                    <input type="password" name="current_password" id="current_password" class="form-control" required>
+                                                    @error('current_password')
+                                                        <div class="text-danger mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <button type="submit" class="btn btn-primary w-100">Update Passport</button>
+                                            </form>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">220</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">$29.00</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="text-secondary-light">24 Jun 2024</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">Floyd Miles</span>
-                                    </td>
-                                    <td>
-                                        <div class="text-secondary-light">
-                                            <h6 class="text-md mb-0 fw-normal">Advanced App Development</h6>
-                                            <span class="text-sm fw-normal">25 Lessons</span>
+                                    </div>
+                                    <!-- Upload Image End -->
+                                    <h6></h6>
+                                    <hr class="my-4">
+                                    <form action="{{ route('finance.updateProfile') }}" method="POST">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="mb-20">
+                                                    <label for="name" class="form-label">Full Name</label>
+                                                    <input type="text" name="name" class="form-control" id="name" 
+                                                        value="{{ old('name', $user->detail->name ?? $user->name) }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="mb-20">
+                                                    <label for="email" class="form-label">Email</label>
+                                                    <input type="email" name="email" class="form-control" id="email" 
+                                                        value="{{ old('email', $user->email) }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="mb-20">
+                                                    <label for="number" class="form-label">Phone</label>
+                                                    <input type="text" name="phone" class="form-control" id="number" 
+                                                        value="{{ old('phone', $user->detail->phone) }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <div class="mb-20">
+                                                    <label for="address" class="form-label">Address</label>
+                                                    <textarea name="address" class="form-control">{{ old('address', $user->detail->address) }}</textarea>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">57</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">$29.00</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="text-secondary-light">24 Jun 2024</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">Ralph Edwards</span>
-                                    </td>
-                                    <td>
-                                        <div class="text-secondary-light">
-                                            <h6 class="text-md mb-0 fw-normal">HTML Fundamental Course</h6>
-                                            <span class="text-sm fw-normal">17 Lessons </span>
+                                        {{-- Current Password --}}
+                                        <div class="mb-3">
+                                            <label for="current_password" class="form-label">Current Password</label>
+                                            <input type="password" name="current_password" id="current_password" class="form-control" required>
+                                            @error('current_password')
+                                                <div class="text-danger mt-1">{{ $message }}</div>
+                                            @enderror
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">27</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary-light">$29.00</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </form>
+                                </div>
+
+                                <div class="tab-pane fade" id="pills-change-passwork" role="tabpanel" aria-labelledby="pills-change-passwork-tab" tabindex="0">
+                                    <form action="{{ route('finance.updatePassword') }}" method="POST">
+                                        @csrf
+                                        <div class="mb-20">
+                                            <label for="current_password" class="form-label">Current Password</label>
+                                            <input type="password" name="current_password" class="form-control" id="current_password" required>
+                                        </div>
+
+                                        <div class="mb-20">
+                                            <label for="password" class="form-label">New Password</label>
+                                            <input type="password" name="password" class="form-control" id="password" required>
+                                        </div>
+
+                                        <div class="mb-20">
+                                            <label for="password_confirmation" class="form-label">Confirm Password</label>
+                                            <input type="password" name="password_confirmation" class="form-control" id="password_confirmation" required>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Update Password</button>
+                                    </form>
+                                </div>
+
+                                <div class="tab-pane fade" id="pills-notification" role="tabpanel" aria-labelledby="pills-notification-tab" tabindex="0">
+                                    <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
+                                        <label for="companzNew" class="position-absolute w-100 h-100 start-0 top-0"></label>
+                                        <div class="d-flex align-items-center gap-3 justify-content-between">
+                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Company News</span>
+                                            <input class="form-check-input" type="checkbox" role="switch" id="companzNew">
+                                        </div>
+                                    </div>
+                                    <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
+                                        <label for="pushNotifcation" class="position-absolute w-100 h-100 start-0 top-0"></label>
+                                        <div class="d-flex align-items-center gap-3 justify-content-between">
+                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Push Notification</span>
+                                            <input class="form-check-input" type="checkbox" role="switch" id="pushNotifcation" checked>
+                                        </div>
+                                    </div>
+                                    <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
+                                        <label for="weeklyLetters" class="position-absolute w-100 h-100 start-0 top-0"></label>
+                                        <div class="d-flex align-items-center gap-3 justify-content-between">
+                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Weekly News Letters</span>
+                                            <input class="form-check-input" type="checkbox" role="switch" id="weeklyLetters" checked>
+                                        </div>
+                                    </div>
+                                    <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
+                                        <label for="meetUp" class="position-absolute w-100 h-100 start-0 top-0"></label>
+                                        <div class="d-flex align-items-center gap-3 justify-content-between">
+                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Meetups Near you</span>
+                                            <input class="form-check-input" type="checkbox" role="switch" id="meetUp">
+                                        </div>
+                                    </div>
+                                    <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
+                                        <label for="orderNotification" class="position-absolute w-100 h-100 start-0 top-0"></label>
+                                        <div class="d-flex align-items-center gap-3 justify-content-between">
+                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Orders Notifications</span>
+                                            <input class="form-check-input" type="checkbox" role="switch" id="orderNotification" checked>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-xxl-4">
-            <div class="card h-100">
-                <div class="card-header">
-                    <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                        <h6 class="mb-2 fw-bold text-lg mb-0">Course Activity</h6>
-                        <a href="javascript:void(0)" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                            View All
-                            <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                        </a>
-                    </div>
-                </div>
-                <div class="card-body p-24">
-                    <ul class="d-flex flex-wrap align-items-center justify-content-center my-3 gap-3">
-                        <li class="d-flex align-items-center gap-2">
-                            <span class="w-12-px h-12-px rounded-circle bg-warning-600"></span>
-                            <span class="text-secondary-light text-sm fw-semibold">Paid Course:
-                                <span class="text-primary-light fw-bold">500</span>
-                            </span>
-                        </li>
-                        <li class="d-flex align-items-center gap-2">
-                            <span class="w-12-px h-12-px rounded-circle bg-success-main"></span>
-                            <span class="text-secondary-light text-sm fw-semibold">Free Course:
-                                <span class="text-primary-light fw-bold">300</span>
-                            </span>
-                        </li>
-                    </ul>
-                    <div id="paymentStatusChart" class="margin-16-minus y-value-left"></div>
-                </div>
-            </div>
-        </div>
-        <!-- ================== Third Row Cards End ======================= -->
-
-    </div>
 
 @endsection
-

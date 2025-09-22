@@ -8,6 +8,207 @@
 @section('content')
 
     <div class="row gy-4">
+
+        <!-- Latest Performance Start -->
+        <div class="col-xxl-6">
+            <div class="card h-100">
+                <div class="card-header border-bottom bg-base ps-0 py-0 pe-24 d-flex align-items-center justify-content-between">
+                    <ul class="nav bordered-tab nav-pills mb-0" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-to-do-list-tab" data-bs-toggle="pill" data-bs-target="#pills-to-do-list" type="button" role="tab" aria-controls="pills-to-do-list" aria-selected="true">Titip Beli</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-recent-leads-tab" data-bs-toggle="pill" data-bs-target="#pills-recent-leads" type="button" role="tab" aria-controls="pills-recent-leads" aria-selected="false" tabindex="-1">Titip Kirim</button>
+                        </li>
+                    </ul>
+                    <a  href="javascript:void(0)" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
+                        View All
+                        <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
+                    </a>
+                </div>
+                <div class="card-body p-24">
+                    <form class="navbar-search mb-3" method="GET" action="{{ route('finance.index2') }}"> <!-- tambahkan margin bawah -->
+                        <input type="text" name="search" placeholder="Search" class="form-control">
+                        <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
+                    </form>
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-to-do-list" role="tabpanel" aria-labelledby="pills-to-do-list-tab" tabindex="0">
+                            <div class="table-responsive scroll-sm">
+                                <table class="table bordered-table mb-0 table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Nama Penitip</th>
+                                            <th scope="col">ID Transaksi</th>
+                                            <th scope="col">Tanggal</th>
+                                            <th scope="col" class="text-center">Status</th>
+                                            <th scope="col">Total Transaksi</th>
+                                            <th scope="col">Pembayaran</th>
+                                            <th scope="col" class="text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($buyTransactions as $i => $trx)
+                                        <tr>
+                                            <td>{{ $buyTransactions->firstItem() + $i }}</td>
+                                            <td>
+                                                <div>
+                                                    <span class="text-md d-block fw-medium text-primary-light">
+                                                        {{ $trx->buyer->name ?? '-' }}
+                                                    </span>
+                                                    <span class="text-sm d-block fw-normal text-secondary-light">
+                                                        #{{ $trx->id }}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td>{{ $trx->traveler->name ?? '-' }}</td>
+                                            <td>{{ $trx->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                <span class="px-24 py-4 rounded-pill fw-medium text-sm
+                                                    @if($trx->payment_status == 'approved') bg-success-focus text-success-main
+                                                    @elseif($trx->payment_status == 'pending') bg-warning-focus text-warning-main
+                                                    @else bg-danger-focus text-danger-main @endif">
+                                                    {{ ucfirst($trx->payment_status) }}
+                                                </span>
+                                            </td>
+                                            <td>{{ number_format($trx->total_price,0,',','.') }}</td>
+                                            <td>{{ $trx->paymentMethod->name ?? '-' }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <a href="javascript:void(0)" 
+                                                        class="me-2 view-transaction" 
+                                                        data-type="buy"
+                                                        data-id="{{ $trx->id }}"
+                                                        data-buyer="{{ $trx->buyer->name ?? '-' }}"
+                                                        data-buyer-img="{{ $trx->buyer->detail->account_image ? asset('storage/'.$trx->buyer->detail->account_image) : asset('assets/images/user-grid/user-grid-img14.png') }}"
+                                                        data-traveler="{{ $trx->traveler->name ?? '-' }}"
+                                                        data-traveler-img="{{ $trx->traveler->detail->account_image ? asset('storage/'.$trx->traveler->detail->account_image) : asset('assets/images/user-grid/user-grid-img14.png') }}"
+                                                        data-product="{{ $trx->product->name ?? '-' }}"
+                                                        data-total="{{ number_format($trx->total_price,0,',','.') }}"
+                                                        data-payment="{{ $trx->paymentMethod->name ?? '-' }}"
+                                                        data-proof="{{ $trx->payment_proof ? asset('storage/'.$trx->payment_proof) : asset('assets/images/card-component/card-img1.png') }}"
+                                                        data-status="{{ ucfirst($trx->payment_status) }}"
+                                                        >
+                                                            <iconify-icon icon="mdi:eye" class="text-primary" style="font-size: 32px;"></iconify-icon>
+                                                        </a>
+                                                    <form action="{{ route('finance.buy.destroy', $trx->id) }}" method="POST" 
+                                                        class="m-0 p-0 d-inline-flex align-items-center"
+                                                        onsubmit="return confirm('Yakin ingin menghapus transaksi ini?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn p-0 border-0 bg-transparent d-flex align-items-center">
+                                                            <iconify-icon icon="mdi:trash" class="text-danger" style="font-size: 32px;"></iconify-icon>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $buyTransactions->appends(['search' => request('search'), 'send_page' => request('send_page')])->links('vendor.pagination.custom') }}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="pills-recent-leads" role="tabpanel" aria-labelledby="pills-recent-leads-tab" tabindex="0">
+                            <div class="table-responsive scroll-sm">
+                                <table class="table bordered-table mb-0 table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Nama Pengirim</th>
+                                            <th scope="col">ID Transaksi</th>
+                                            <th scope="col">Tanggal</th>
+                                            <th scope="col" class="text-center">Status</th>
+                                            <th scope="col">Total Biaya</th>
+                                            <th scope="col">Pembayaran</th>
+                                            <th scope="col" class="text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($sendTransactions as $i => $trx)
+                                        <tr>
+                                            <td>{{ $sendTransactions->firstItem() + $i }}</td>
+                                            <td>
+                                                
+                                                    <span class="text-md d-block fw-medium text-primary-light">
+                                                        {{ $trx->sender->name ?? '-' }}
+                                                    </span>
+                                                    </td>
+                                                    <td>
+                                                    <span class="text-sm d-block fw-normal text-secondary-light">
+                                                        #{{ $trx->id }}
+                                                    </span>
+                                                
+                                            </td>
+                                            <td>{{ $trx->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                <span class="px-24 py-4 rounded-pill fw-medium text-sm
+                                                    @if($trx->payment_status == 'approved') bg-success-focus text-success-main
+                                                    @elseif($trx->payment_status == 'pending') bg-warning-focus text-warning-main
+                                                    @else bg-danger-focus text-danger-main @endif">
+                                                    {{ ucfirst($trx->payment_status) }}
+                                                </span>
+                                            </td>
+                                            <td>{{ number_format($trx->total_price,0,',','.') }}</td>
+                                            <td>{{ $trx->paymentMethod->name ?? '-' }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <a href="javascript:void(0)" 
+                                                        class="me-2 view-transaction" 
+                                                        data-type="send"
+                                                        data-id="{{ $trx->id }}"
+                                                        data-sender="{{ $trx->sender->name ?? '-' }}"
+                                                        data-sender-img="{{ $trx->sender->detail->account_image ? asset('storage/'.$trx->sender->detail->account_image) : asset('assets/images/user-grid/user-grid-img14.png') }}"
+                                                        data-receiver="{{ $trx->receiver->name ?? '-' }}"
+                                                        data-receiver-img="{{ $trx->receiver->detail->account_image ? asset('storage/'.$trx->receiver->detail->account_image) : asset('assets/images/user-grid/user-grid-img14.png') }}"
+                                                        data-product="{{ $trx->product->name ?? '-' }}"
+                                                        data-total="{{ number_format($trx->total_price,0,',','.') }}"
+                                                        data-payment="{{ $trx->paymentMethod->name ?? '-' }}"
+                                                        data-proof="{{ $trx->payment_proof ? asset('storage/'.$trx->payment_proof) : asset('assets/images/card-component/card-img1.png') }}"
+                                                        data-status="{{ ucfirst($trx->payment_status) }}"
+                                                        >
+                                                            <iconify-icon icon="mdi:eye" class="text-primary" style="font-size: 32px;"></iconify-icon>
+                                                        </a>
+                                                    <form action="{{ route('finance.send.destroy', $trx->id) }}" method="POST" 
+                                                        class="m-0 p-0 d-inline-flex align-items-center"
+                                                        onsubmit="return confirm('Yakin ingin menghapus transaksi ini?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn p-0 border-0 bg-transparent d-flex align-items-center">
+                                                            <iconify-icon icon="mdi:trash" class="text-danger" style="font-size: 32px;"></iconify-icon>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $sendTransactions->appends(['search' => request('search'), 'send_page' => request('send_page')])->links('vendor.pagination.custom') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Detail Transaksi -->
+                                <div class="modal fade" id="transactionDetailModal" tabindex="-1" aria-labelledby="transactionDetailModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="transactionDetailModalLabel">Detail Transaksi</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="transactionDetailContent">
+                                        <!-- Konten detail transaksi akan diisi via JS -->
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+            </div>
+        </div>
+
+
         <div class="col-xxl-8">
             <div class="row gy-4">
 
@@ -575,293 +776,7 @@
         </div>
         <!-- Top performance End -->
 
-        <!-- Latest Performance Start -->
-        <div class="col-xxl-6">
-            <div class="card h-100">
-                <div class="card-header border-bottom bg-base ps-0 py-0 pe-24 d-flex align-items-center justify-content-between">
-                    <ul class="nav bordered-tab nav-pills mb-0" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="pills-to-do-list-tab" data-bs-toggle="pill" data-bs-target="#pills-to-do-list" type="button" role="tab" aria-controls="pills-to-do-list" aria-selected="true">All Item</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-recent-leads-tab" data-bs-toggle="pill" data-bs-target="#pills-recent-leads" type="button" role="tab" aria-controls="pills-recent-leads" aria-selected="false" tabindex="-1">Best Match</button>
-                        </li>
-                    </ul>
-                    <a  href="javascript:void(0)" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                        View All
-                        <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                    </a>
-                </div>
-                <div class="card-body p-24">
-                    <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="pills-to-do-list" role="tabpanel" aria-labelledby="pills-to-do-list-tab" tabindex="0">
-                            <div class="table-responsive scroll-sm">
-                                <table class="table bordered-table mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Task Name </th>
-                                            <th scope="col">Assigned To </th>
-                                            <th scope="col">Due Date</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div>
-                                                    <span class="text-md d-block line-height-1 fw-medium text-primary-light text-w-200-px">Hotel Management System</span>
-                                                    <span class="text-sm d-block fw-normal text-secondary-light">#5632</span>
-                                                </div>
-                                            </td>
-                                            <td>Kathryn Murphy</td>
-                                            <td>27 Mar 2024</td>
-                                            <td> <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span> </td>
-                                            <td class="text-center text-neutral-700 text-xl">
-                                                <div class="dropdown">
-                                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <iconify-icon icon="ph:dots-three-outline-vertical-fill" class="icon"></iconify-icon>
-                                                    </button>
-                                                    <ul class="dropdown-menu p-12 border bg-base shadow">
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Another action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Something else here</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div>
-                                                    <span class="text-md d-block line-height-1 fw-medium text-primary-light text-w-200-px">Hotel Management System</span>
-                                                    <span class="text-sm d-block fw-normal text-secondary-light">#5632</span>
-                                                </div>
-                                            </td>
-                                            <td>Darlene Robertson</td>
-                                            <td>27 Mar 2024</td>
-                                            <td> <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span> </td>
-                                            <td class="text-center text-neutral-700 text-xl">
-                                                <div class="dropdown">
-                                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <iconify-icon icon="ph:dots-three-outline-vertical-fill" class="icon"></iconify-icon>
-                                                    </button>
-                                                    <ul class="dropdown-menu p-12 border bg-base shadow">
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Another action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Something else here</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div>
-                                                    <span class="text-md d-block line-height-1 fw-medium text-primary-light text-w-200-px">Hotel Management System</span>
-                                                    <span class="text-sm d-block fw-normal text-secondary-light">#5632</span>
-                                                </div>
-                                            </td>
-                                            <td>Courtney Henry</td>
-                                            <td>27 Mar 2024</td>
-                                            <td> <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span> </td>
-                                            <td class="text-center text-neutral-700 text-xl">
-                                                <div class="dropdown">
-                                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <iconify-icon icon="ph:dots-three-outline-vertical-fill" class="icon"></iconify-icon>
-                                                    </button>
-                                                    <ul class="dropdown-menu p-12 border bg-base shadow">
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Another action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Something else here</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div>
-                                                    <span class="text-md d-block line-height-1 fw-medium text-primary-light text-w-200-px">Hotel Management System</span>
-                                                    <span class="text-sm d-block fw-normal text-secondary-light">#5632</span>
-                                                </div>
-                                            </td>
-                                            <td>Jenny Wilson</td>
-                                            <td>27 Mar 2024</td>
-                                            <td> <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span> </td>
-                                            <td class="text-center text-neutral-700 text-xl">
-                                                <div class="dropdown">
-                                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <iconify-icon icon="ph:dots-three-outline-vertical-fill" class="icon"></iconify-icon>
-                                                    </button>
-                                                    <ul class="dropdown-menu p-12 border bg-base shadow">
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Another action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Something else here</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div>
-                                                    <span class="text-md d-block line-height-1 fw-medium text-primary-light text-w-200-px">Hotel Management System</span>
-                                                    <span class="text-sm d-block fw-normal text-secondary-light">#5632</span>
-                                                </div>
-                                            </td>
-                                            <td>Leslie Alexander</td>
-                                            <td>27 Mar 2024</td>
-                                            <td> <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span> </td>
-                                            <td class="text-center text-neutral-700 text-xl">
-                                                <div class="dropdown">
-                                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <iconify-icon icon="ph:dots-three-outline-vertical-fill" class="icon"></iconify-icon>
-                                                    </button>
-                                                    <ul class="dropdown-menu p-12 border bg-base shadow">
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Another action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Something else here</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="pills-recent-leads" role="tabpanel" aria-labelledby="pills-recent-leads-tab" tabindex="0">
-                            <div class="table-responsive scroll-sm">
-                                <table class="table bordered-table mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Task Name </th>
-                                            <th scope="col">Assigned To </th>
-                                            <th scope="col">Due Date</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div>
-                                                    <span class="text-md d-block line-height-1 fw-medium text-primary-light text-w-200-px">Hotel Management System</span>
-                                                    <span class="text-sm d-block fw-normal text-secondary-light">#5632</span>
-                                                </div>
-                                            </td>
-                                            <td>Kathryn Murphy</td>
-                                            <td>27 Mar 2024</td>
-                                            <td> <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span> </td>
-                                            <td class="text-center text-neutral-700 text-xl">
-                                                <div class="dropdown">
-                                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <iconify-icon icon="ph:dots-three-outline-vertical-fill" class="icon"></iconify-icon>
-                                                    </button>
-                                                    <ul class="dropdown-menu p-12 border bg-base shadow">
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Another action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Something else here</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div>
-                                                    <span class="text-md d-block line-height-1 fw-medium text-primary-light text-w-200-px">Hotel Management System</span>
-                                                    <span class="text-sm d-block fw-normal text-secondary-light">#5632</span>
-                                                </div>
-                                            </td>
-                                            <td>Darlene Robertson</td>
-                                            <td>27 Mar 2024</td>
-                                            <td> <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span> </td>
-                                            <td class="text-center text-neutral-700 text-xl">
-                                                <div class="dropdown">
-                                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <iconify-icon icon="ph:dots-three-outline-vertical-fill" class="icon"></iconify-icon>
-                                                    </button>
-                                                    <ul class="dropdown-menu p-12 border bg-base shadow">
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Another action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Something else here</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div>
-                                                    <span class="text-md d-block line-height-1 fw-medium text-primary-light text-w-200-px">Hotel Management System</span>
-                                                    <span class="text-sm d-block fw-normal text-secondary-light">#5632</span>
-                                                </div>
-                                            </td>
-                                            <td>Courtney Henry</td>
-                                            <td>27 Mar 2024</td>
-                                            <td> <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span> </td>
-                                            <td class="text-center text-neutral-700 text-xl">
-                                                <div class="dropdown">
-                                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <iconify-icon icon="ph:dots-three-outline-vertical-fill" class="icon"></iconify-icon>
-                                                    </button>
-                                                    <ul class="dropdown-menu p-12 border bg-base shadow">
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Another action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Something else here</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div>
-                                                    <span class="text-md d-block line-height-1 fw-medium text-primary-light text-w-200-px">Hotel Management System</span>
-                                                    <span class="text-sm d-block fw-normal text-secondary-light">#5632</span>
-                                                </div>
-                                            </td>
-                                            <td>Jenny Wilson</td>
-                                            <td>27 Mar 2024</td>
-                                            <td> <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span> </td>
-                                            <td class="text-center text-neutral-700 text-xl">
-                                                <div class="dropdown">
-                                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <iconify-icon icon="ph:dots-three-outline-vertical-fill" class="icon"></iconify-icon>
-                                                    </button>
-                                                    <ul class="dropdown-menu p-12 border bg-base shadow">
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Another action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Something else here</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div>
-                                                    <span class="text-md d-block line-height-1 fw-medium text-primary-light text-w-200-px">Hotel Management System</span>
-                                                    <span class="text-sm d-block fw-normal text-secondary-light">#5632</span>
-                                                </div>
-                                            </td>
-                                            <td>Leslie Alexander</td>
-                                            <td>27 Mar 2024</td>
-                                            <td> <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">Active</span> </td>
-                                            <td class="text-center text-neutral-700 text-xl">
-                                                <div class="dropdown">
-                                                    <button type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <iconify-icon icon="ph:dots-three-outline-vertical-fill" class="icon"></iconify-icon>
-                                                    </button>
-                                                    <ul class="dropdown-menu p-12 border bg-base shadow">
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Another action</a></li>
-                                                        <li><a class="dropdown-item px-16 py-8 rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900"  href="javascript:void(0)">Something else here</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
         <div class="col-xxl-6">
             <div class="card h-100">
@@ -924,4 +839,52 @@
     </div>
 
 @endsection
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".view-transaction").forEach(btn => {
+        btn.addEventListener("click", function () {
+            let type = this.dataset.type;
+            let html = `
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>ID Transaksi:</strong> #${this.dataset.id}</li>
+                    <li class="list-group-item"><strong>Status:</strong> ${this.dataset.status}</li>
+                    <li class="list-group-item"><strong>Produk:</strong> ${this.dataset.product}</li>
+                    <li class="list-group-item"><strong>Total:</strong> Rp ${this.dataset.total}</li>
+                    <li class="list-group-item"><strong>Pembayaran:</strong> ${this.dataset.payment}</li>
+                    <li class="list-group-item"><strong>Bukti Pembayaran:</strong><br>
+                        <img src="${this.dataset.proof}" class="img-fluid rounded mt-2" style="max-height:200px;">
+                    </li>`;
 
+            if (type === "buy") {
+                html += `
+                    <li class="list-group-item d-flex align-items-center gap-2">
+                        <strong>Pembeli:</strong>
+                        <img src="${this.dataset.buyerImg}" class="rounded-circle" width="40" height="40">
+                        ${this.dataset.buyer}
+                    </li>
+                    <li class="list-group-item d-flex align-items-center gap-2">
+                        <strong>Traveler:</strong>
+                        <img src="${this.dataset.travelerImg}" class="rounded-circle" width="40" height="40">
+                        ${this.dataset.traveler}
+                    </li>`;
+            } else if (type === "send") {
+                html += `
+                    <li class="list-group-item d-flex align-items-center gap-2">
+                        <strong>Pengirim:</strong>
+                        <img src="${this.dataset.senderImg}" class="rounded-circle" width="40" height="40">
+                        ${this.dataset.sender}
+                    </li>
+                    <li class="list-group-item d-flex align-items-center gap-2">
+                        <strong>Penerima:</strong>
+                        <img src="${this.dataset.receiverImg}" class="rounded-circle" width="40" height="40">
+                        ${this.dataset.receiver}
+                    </li>`;
+            }
+
+            html += `</ul>`;
+            document.getElementById("transactionDetailContent").innerHTML = html;
+            new bootstrap.Modal(document.getElementById('transactionDetailModal')).show();
+        });
+    });
+});
+</script>
