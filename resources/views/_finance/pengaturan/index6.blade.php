@@ -46,7 +46,7 @@
                         <img src="{{ asset('assets/images/card/card-bg.png') }}" alt="" class="w-100 object-fit-cover">
                         <div class="pb-24 ms-16 mb-24 me-16  mt--100">
                             <div class="text-center border border-top-0 border-start-0 border-end-0">
-                                 <img id="profileImage"
+                                <img id="profileImage"
                                     src="{{ $user->detail->account_image
                                         ? asset('storage/'.$user->detail->account_image)
                                         : asset('assets/images/user-grid/user-grid-img14.png') }}"

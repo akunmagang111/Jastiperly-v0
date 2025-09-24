@@ -293,7 +293,7 @@ class FinanceDashboardController extends Controller
             ->latest()
             ->paginate(20, ['*'], 'send_page');
 
-        return view('_finance.dashboard.index2', compact('buyTransactions', 'sendTransactions', 'search'));
+        return view('_finance.transaksi.index2', compact('buyTransactions', 'sendTransactions', 'search'));
     }
     public function destroyBuy($id)
     {
@@ -363,7 +363,7 @@ class FinanceDashboardController extends Controller
 
         $commissions = $query->latest()->paginate(20);
 
-        return view('_finance.dashboard.index3', compact('commissions', 'statusFilter', 'search'));
+        return view('_finance.traveler.index3', compact('commissions', 'statusFilter', 'search'));
     }
     public function validateCommission($id)
     {
@@ -544,7 +544,7 @@ class FinanceDashboardController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return view('_finance.dashboard.index4', [
+        return view('_finance.penitip.index4', [
             'transactions' => $paginated,
             'page' => $page,
             'perPage' => $perPage,
@@ -583,7 +583,7 @@ class FinanceDashboardController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view('_finance.dashboard.index5', compact('refunds', 'search', 'status'));
+        return view('_finance.refund.index5', compact('refunds', 'search', 'status'));
     }
     public function updateRefund(Request $request, $id)
     {
@@ -599,7 +599,7 @@ class FinanceDashboardController extends Controller
         $user = Auth::user();
         $user->loadMissing('detail');
 
-        return view('_finance.dashboard.index6', [
+        return view('_finance.pengaturan.index6', [
             'user' => $user,
         ]);
     }

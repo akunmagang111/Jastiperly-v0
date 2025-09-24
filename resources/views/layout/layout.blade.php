@@ -6,15 +6,31 @@
 
 <body>
 
-    <!-- ..::  header area start ::.. -->
-    <x-sidebar />
-    <!-- ..::  header area end ::.. -->
+    <!-- ..:: sidebar start ::.. -->
+    @auth
+        @if(Auth::user()->role === 'finance')
+            @include('components.sidebar_finance')
+        @elseif(Auth::user()->role === 'admin')
+            @include('components.sidebar_admin')
+        @elseif(Auth::user()->role === 'superadmin')
+            @include('components.sidebar_superadmin')
+        @endif
+    @endauth
+    <!-- ..:: sidebar end ::.. -->
 
     <main class="dashboard-main">
 
-        <!-- ..::  navbar start ::.. -->
-        <x-navbar />
-        <!-- ..::  navbar end ::.. -->
+        <!-- ..:: navbar start ::.. -->
+        @auth
+            @if(Auth::user()->role === 'finance')
+                @include('components.navbar_finance')
+            @elseif(Auth::user()->role === 'admin')
+                @include('components.navbar_admin')
+            @elseif(Auth::user()->role === 'superadmin')
+                @include('components.navbar_superadmin')
+            @endif
+        @endauth
+        <!-- ..:: navbar end ::.. -->
         <div class="dashboard-main-body">
             
             <!-- ..::  breadcrumb  start ::.. -->

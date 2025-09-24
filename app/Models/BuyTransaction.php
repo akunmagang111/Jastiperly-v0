@@ -2,11 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BuyTransaction extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
+        // Dari model lama
+        'user_id',
+        'amount',
+        'status',
+
+        // Dari ERD
         'buyer_id',
         'traveler_id',
         'product_id',
@@ -17,6 +26,19 @@ class BuyTransaction extends Model
         'payment_status',
     ];
 
+    /**
+     * ====================
+     * Relasi
+     * ====================
+     */
+
+    // Versi lama: transaksi milik user
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Versi ERD
     public function buyer()
     {
         return $this->belongsTo(User::class, 'buyer_id');

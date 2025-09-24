@@ -1,16 +1,182 @@
 @extends('layout.layout')
 @php
-    $title='Dashboard';
-    $subTitle = 'Investment';
+    $title='Super Admin';
+    $subTitle = 'Setting';
     $script = ' <script src="' . asset('assets/js/homeFiveChart.js') . '"></script>';
 @endphp
 
 @section('content')
 
-            <div class="row gy-4">
+<div class="card border-0 shadow rounded-4 overflow-hidden">
+    <!-- Header -->
+    <div class="position-relative bg-light p-4 d-flex align-items-center">
+        <img src="{{ $user->photo_url ?? asset('assets/images/illustrator-avatar.png') }}"
+             class="rounded-circle border border-3 border-white shadow me-3"
+             alt="User" style="width:90px; height:90px; object-fit:cover;">
+        <div>
+            <h4 class="mb-1 fw-bold">{{ $user->name }}</h4>
+            <span class="badge bg-success px-3 py-1">● Online</span>
+        </div>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body p-5">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="settingTabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#profil">Profil</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#preferensi">Preferensi</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#keamanan">Keamanan</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Profil -->
+            <div class="tab-pane fade show active animate__animated animate__fadeIn" id="profil">
+                <form action="{{ route('superadmin.settings.update') }}" method="POST">
+                    @csrf
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Username</label>
+                            <input type="text" name="username" value="{{ old('username',$user->username) }}" 
+                                   class="form-control rounded-3 shadow-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email</label>
+                            <input type="email" name="email" value="{{ old('email',$user->email) }}" 
+                                   class="form-control rounded-3 shadow-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Nama Lengkap</label>
+                            <input type="text" name="name" value="{{ old('name',$user->name) }}" 
+                                   class="form-control rounded-3 shadow-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Telepon</label>
+                            <input type="text" name="telepon" value="{{ old('telepon',$user->telepon) }}" 
+                                   class="form-control rounded-3 shadow-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Alamat</label>
+                            <input type="text" name="alamat" value="{{ old('alamat',$user->alamat) }}" 
+                                   class="form-control rounded-3 shadow-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Jenis Kelamin</label>
+                            <select name="jenis_kelamin" class="form-select rounded-3 shadow-sm">
+                                <option value="">Pilih</option>
+                                <option value="L" {{ $user->jenis_kelamin == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                                <option value="P" {{ $user->jenis_kelamin == 'P' ? 'selected' : '' }}>Perempuan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-end">
+                        <button type="submit" class="btn btn-gradient px-4 py-2 fw-semibold shadow-sm rounded-3">
+                            <i class="bi bi-save me-1"></i> Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Preferensi -->
+            <div class="tab-pane fade animate__animated animate__fadeIn" id="preferensi">
+                <form action="{{ route('superadmin.settings.preference') }}" method="POST">
+                    @csrf
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Bahasa</label>
+                            <select name="language" class="form-select rounded-3 shadow-sm">
+                                <option value="">Pilih</option>
+                                <option value="id">Indonesia</option>
+                                <option value="en">English</option>
+                                <option value="jp">日本語 (Japan)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-end">
+                        <button type="submit" class="btn btn-gradient px-4 py-2 fw-semibold shadow-sm rounded-3">
+                            <i class="bi bi-save me-1"></i> Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Keamanan -->
+            <div class="tab-pane fade animate__animated animate__fadeIn" id="keamanan">
+                <form action="{{ route('superadmin.settings.password') }}" method="POST">
+                    @csrf
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Kata Sandi Lama</label>
+                            <input type="password" name="old_password" class="form-control rounded-3 shadow-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Kata Sandi Baru</label>
+                            <input type="password" name="new_password" class="form-control rounded-3 shadow-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Konfirmasi Kata Sandi</label>
+                            <input type="password" name="confirm_password" class="form-control rounded-3 shadow-sm">
+                        </div>
+                    </div>
+                    <div class="mt-5 text-end">
+                        <button type="submit" class="btn btn-gradient px-4 py-2 fw-semibold shadow-sm rounded-3">
+                            <i class="bi bi-lock me-1"></i> Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs .nav-link {
+        border: none;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        color: #6c757d;
+    }
+    .nav-tabs .nav-link.active {
+        border-color: #0d6efd;
+        color: #0d6efd;
+        font-weight: 600;
+    }
+    .form-control, .form-select {
+        transition: all 0.2s ease-in-out;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 6px rgba(13,110,253,0.25);
+    }
+    .btn-gradient {
+        background: linear-gradient(90deg, #0d6efd, #4e9cff);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(13,110,253,0.3);
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+
+
+
+
+           <!-- <div class="row gy-4"> -->
 
                 <!-- Dashboard Widget Start -->
-                <div class="col-xxl-3 col-sm-6">
+            <!--    <div class="col-xxl-3 col-sm-6">
                     <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-3">
                         <div class="card-body p-0">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
@@ -33,11 +199,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Dashboard Widget End -->
 
                 <!-- Dashboard Widget Start -->
-                <div class="col-xxl-3 col-sm-6">
+                <!-- <div class="col-xxl-3 col-sm-6">
                     <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-2">
                         <div class="card-body p-0">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
@@ -60,11 +226,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Dashboard Widget End -->
 
                 <!-- Dashboard Widget Start -->
-                <div class="col-xxl-3 col-sm-6">
+                <!-- <div class="col-xxl-3 col-sm-6">
                     <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-5">
                         <div class="card-body p-0">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
@@ -87,11 +253,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Dashboard Widget End -->
 
                 <!-- Dashboard Widget Start -->
-                <div class="col-xxl-3 col-sm-6">
+                <!-- <div class="col-xxl-3 col-sm-6">
                     <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-4">
                         <div class="card-body p-0">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
@@ -114,11 +280,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Dashboard Widget End -->
 
                 <!-- Revenue Statistics Start -->
-                <div class="col-xxl-8">
+                <!-- <div class="col-xxl-8">
                     <div class="card h-100 radius-8 border-0">
                         <div class="card-body p-24">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
@@ -157,11 +323,11 @@
 
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Revenue Statistics End -->
 
                 <!-- Statistics Start -->
-                <div class="col-xxl-4">
+                <!-- <div class="col-xxl-4">
                     <div class="card h-100 radius-8 border-0">
                         <div class="card-body p-24">
                             <h6 class="mb-2 fw-bold text-lg">Statistic</h6>
@@ -200,11 +366,11 @@
 
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Statistics End -->
 
                 <!-- Most Location Start -->
-                <div class="col-xxl-3">
+                <!-- <div class="col-xxl-3">
                     <div class="card radius-8 border-0">
 
                         <div class="card-body">
@@ -292,11 +458,11 @@
 
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Most Location End -->
 
                 <!-- My portfolio Start -->
-                <div class="col-xxl-3">
+                <!-- <div class="col-xxl-3">
                     <div class="card h-100 radius-8 border-0">
                         <div class="card-body p-24">
                             <h6 class="mb-2 fw-bold text-lg">My Portfolio</h6>
@@ -324,11 +490,11 @@
 
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- My portfolio End -->
 
                 <!-- Latest Investments Start -->
-                <div class="col-xxl-6">
+                <!-- <div class="col-xxl-6">
                     <div class="card h-100">
                         <div class="card-body p-24">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
@@ -461,11 +627,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Latest Investments End -->
 
                 <!-- Notice board Start -->
-                <div class="col-xxl-4">
+                <!-- <div class="col-xxl-4">
                     <div class="card h-100">
                         <div class="card-body p-24">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
@@ -505,11 +671,11 @@
 
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Notice board End -->
 
                 <!-- Total Transactions Start -->
-                <div class="col-xxl-4">
+                <!-- <div class="col-xxl-4">
                     <div class="card h-100">
                         <div class="card-body p-24">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
@@ -537,11 +703,11 @@
 
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Total Transactions End -->
 
                 <!-- Project Status Start -->
-                <div class="col-xxl-4">
+                <!-- <div class="col-xxl-4">
                     <div class="card h-100">
                         <div class="card-body p-24">
                             <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
@@ -646,9 +812,8 @@
 
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Project Status End -->
-
-            </div>
+           <!-- </div>  -->
 
 @endsection

@@ -108,7 +108,7 @@ Route::middleware(['auth', 'role:finance'])->prefix('finance')->group(function (
     Route::post('/update-profile-image', [FinanceDashboardController::class, 'updateProfileImage'])
     ->name('finance.updateProfileImage');
     Route::post('/finance/update-idcard', [FinanceDashboardController::class, 'updateIdCard'])->name('finance.updateIdCard');
-Route::post('/finance/update-passport', [FinanceDashboardController::class, 'updatePassport'])->name('finance.updatePassport');
+    Route::post('/finance/update-passport', [FinanceDashboardController::class, 'updatePassport'])->name('finance.updatePassport');
 
 
     Route::get('/dashboard7', [FinanceDashboardController::class, 'index7'])->name('finance.index7');
@@ -118,26 +118,72 @@ Route::post('/finance/update-passport', [FinanceDashboardController::class, 'upd
 });
 
 
-// --------------------------------------------------- SUPERADMIN -------------------------------------------------------
-Route::middleware(['auth', 'role:superadmin'])->prefix('superadmin')->group(function () {
-    Route::get('/dashboard', [SuperadminDashboardController::class, 'index'])->name('superadmin.index');
-    Route::get('/dashboard2', [SuperadminDashboardController::class, 'index2'])->name('superadmin.index2');
-    Route::get('/dashboard3', [SuperadminDashboardController::class, 'index3'])->name('superadmin.index3');
-    Route::get('/dashboard4', [SuperadminDashboardController::class, 'index4'])->name('superadmin.index4');
-    Route::get('/dashboard5', [SuperadminDashboardController::class, 'index5'])->name('superadmin.index5');
-    Route::get('/dashboard6', [SuperadminDashboardController::class, 'index6'])->name('superadmin.index6');
-    Route::get('/dashboard7', [SuperadminDashboardController::class, 'index7'])->name('superadmin.index7');
-    Route::get('/dashboard8', [SuperadminDashboardController::class, 'index8'])->name('superadmin.index8');
-    Route::get('/dashboard9', [SuperadminDashboardController::class, 'index9'])->name('superadmin.index9');
-    Route::get('/dashboard10', [SuperadminDashboardController::class, 'index10'])->name('superadmin.index10');
+// --------------------------------------------------- SUPERADMIN --------------------------------------------------
+Route::middleware(['auth', 'role:superadmin'])
+    ->prefix('superadmin')
+    ->name('superadmin.')
+    ->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', [SuperadminDashboardController::class, 'index'])->name('dashboard');
+
+
+    // Profile
+    Route::get('/profile', [SuperadminDashboardController::class, 'profile'])->name('viewProfile');
+
+    // Users
+    Route::get('/users', [SuperadminDashboardController::class, 'index2'])->name('users.index');
+    Route::get('/users/export', [SuperadminDashboardController::class, 'usersExport'])->name('users.export');
+    Route::get('/users/{user}', [SuperadminDashboardController::class, 'usersShow'])->name('users.show');
+    Route::get('/users/{user}/edit', [SuperadminDashboardController::class, 'usersEdit'])->name('users.edit');
+    Route::put('/users/{user}', [SuperadminDashboardController::class, 'usersUpdate'])->name('users.update');
+    Route::delete('/users/{user}', [SuperadminDashboardController::class, 'usersDestroy'])->name('users.destroy');
+
+    
+    // =================== Products ===================
+Route::get('products', [SuperadminDashboardController::class, 'index3'])->name('products.index');
+Route::get('products/create', [SuperadminDashboardController::class, 'create'])->name('products.create');
+Route::post('products/store', [SuperadminDashboardController::class, 'store'])->name('products.store');
+Route::get('products/{id}', [SuperadminDashboardController::class, 'showProduct'])->name('products.show');
+Route::get('products/{id}/edit', [SuperadminDashboardController::class, 'editProduct'])->name('products.edit');
+Route::put('products/{id}', [SuperadminDashboardController::class, 'updateProduct'])->name('products.update');
+Route::delete('products/{id}', [SuperadminDashboardController::class, 'destroyProduct'])->name('products.destroy');
+Route::post('products/{id}/validate', [SuperadminDashboardController::class, 'validateProduct'])->name('products.validate');
+Route::get('products-export', [SuperadminDashboardController::class, 'exportProducts'])->name('products.export');
+
+
+// =================== Transactions ===================
+Route::get('/transactions', [SuperadminDashboardController::class, 'index4'])->name('transactions.index');
+Route::get('/transactions/export', [SuperadminDashboardController::class, 'exportTransactions'])->name('transactions.export');
+Route::get('/transactions/{id}/edit', [SuperadminDashboardController::class, 'editTransaction'])->name('transactions.edit');
+Route::get('/transactions/{id}', [SuperadminDashboardController::class, 'showTransaction'])->name('transactions.show');
+Route::put('/transactions/{id}', [SuperadminDashboardController::class, 'updateTransaction'])->name('transactions.updateTransaction');
+Route::delete('/transactions/{id}', [SuperadminDashboardController::class, 'destroyTransaction'])->name('transactions.destroy');
+
+   // =================== Refunds ===================
+Route::get('/refunds', [SuperadminDashboardController::class, 'refundsIndex'])->name('refunds.index');
+Route::get('/refunds/export', [SuperadminDashboardController::class, 'exportRefunds'])->name('refunds.export');
+Route::get('/refunds/{id}', [SuperadminDashboardController::class, 'refundsShow'])->name('refunds.show');
+Route::get('/refunds/{id}/edit', [SuperadminDashboardController::class, 'refundsEdit'])->name('refunds.edit');
+Route::put('/refunds/{id}', [SuperadminDashboardController::class, 'refundsUpdate'])->name('refunds.update');
+Route::delete('/refunds/{id}', [SuperadminDashboardController::class, 'refundsDestroy'])->name('refunds.destroy');
+
+
+
+    // Settings
+    Route::get('/settings', [SuperadminDashboardController::class, 'settingsIndex'])->name('settings.index');
+    Route::post('/settings/update', [SuperadminDashboardController::class, 'settingsUpdate'])->name('settings.update');
+    Route::post('/settings/preference', [SuperadminDashboardController::class, 'settingsUpdatePreference'])->name('settings.preference');
+    Route::post('/settings/password', [SuperadminDashboardController::class, 'settingsUpdatePassword'])->name('settings.password');
 });
+
 
 
 
 // -----------------------------------------------------------------------------------------------------------------
 // =================================================================================================================
 
-// ------------------- ROUTE LAMA (dibungkus auth) -------------------
+// ----------------------------------------- ROUTE LAMA (dibungkus auth) -------------------------------------------
 Route::middleware(['auth'])->group(function () {
 
     // Dashboard lama
@@ -147,160 +193,143 @@ Route::middleware(['auth'])->group(function () {
 
     // Home
     Route::controller(HomeController::class)->group(function () {
-        Route::get('calendar','calendar')->name('calendar');
-        Route::get('chatmessage','chatMessage')->name('chatMessage');
-        Route::get('chatempty','chatempty')->name('chatempty');
-        Route::get('email','email')->name('email');
-        Route::get('error','error1')->name('error');
-        Route::get('faq','faq')->name('faq');
-        Route::get('gallery','gallery')->name('gallery');
-        Route::get('kanban','kanban')->name('kanban');
-        Route::get('pricing','pricing')->name('pricing');
-        Route::get('termscondition','termsCondition')->name('termsCondition');
-        Route::get('widgets','widgets')->name('widgets');
-        Route::get('chatprofile','chatProfile')->name('chatProfile');
-        Route::get('veiwdetails','veiwDetails')->name('veiwDetails');
-        Route::get('blankPage','blankPage')->name('blankPage');
-        Route::get('comingSoon','comingSoon')->name('comingSoon');
-        Route::get('maintenance','maintenance')->name('maintenance');
-        Route::get('starred','starred')->name('starred');
-        Route::get('testimonials','testimonials')->name('testimonials');
+        Route::get('calendar', 'calendar')->name('calendar');
+        Route::get('chatmessage', 'chatMessage')->name('chatMessage');
+        Route::get('chatempty', 'chatempty')->name('chatempty');
+        Route::get('email', 'email')->name('email');
+        Route::get('error', 'error1')->name('error');
+        Route::get('faq', 'faq')->name('faq');
+        Route::get('gallery', 'gallery')->name('gallery');
+        Route::get('kanban', 'kanban')->name('kanban');
+        Route::get('pricing', 'pricing')->name('pricing');
+        Route::get('termscondition', 'termsCondition')->name('termsCondition');
+        Route::get('widgets', 'widgets')->name('widgets');
+        Route::get('chatprofile', 'chatProfile')->name('chatProfile');
+        Route::get('veiwdetails', 'veiwDetails')->name('veiwDetails');
+        Route::get('blankPage', 'blankPage')->name('blankPage');
+        Route::get('comingSoon', 'comingSoon')->name('comingSoon');
+        Route::get('maintenance', 'maintenance')->name('maintenance');
+        Route::get('starred', 'starred')->name('starred');
+        Route::get('testimonials', 'testimonials')->name('testimonials');
     });
 
     // aiApplication
-    Route::prefix('aiapplication')->group(function () {
-        Route::controller(AiapplicationController::class)->group(function () {
-            Route::get('/codegenerator', 'codeGenerator')->name('codeGenerator');
-            Route::get('/codegeneratornew', 'codeGeneratorNew')->name('codeGeneratorNew');
-            Route::get('/imagegenerator','imageGenerator')->name('imageGenerator');
-            Route::get('/textgeneratornew','textGeneratorNew')->name('textGeneratorNew');
-            Route::get('/textgenerator','textGenerator')->name('textGenerator');
-            Route::get('/videogenerator','videoGenerator')->name('videoGenerator');
-            Route::get('/voicegenerator','voiceGenerator')->name('voiceGenerator');
-        });
+    Route::prefix('aiapplication')->controller(AiapplicationController::class)->group(function () {
+        Route::get('/codegenerator', 'codeGenerator')->name('codeGenerator');
+        Route::get('/codegeneratornew', 'codeGeneratorNew')->name('codeGeneratorNew');
+        Route::get('/imagegenerator', 'imageGenerator')->name('imageGenerator');
+        Route::get('/textgeneratornew', 'textGeneratorNew')->name('textGeneratorNew');
+        Route::get('/textgenerator', 'textGenerator')->name('textGenerator');
+        Route::get('/videogenerator', 'videoGenerator')->name('videoGenerator');
+        Route::get('/voicegenerator', 'voiceGenerator')->name('voiceGenerator');
     });
 
-    // Authentication UI (jika masih mau dipakai)
-    Route::prefix('authentication')->group(function () {
-        Route::controller(AuthenticationController::class)->group(function () {
-            Route::get('/forgotpassword', 'forgotPassword')->name('forgotPassword');
-            Route::get('/signin', 'signin')->name('signin');
-            Route::get('/signup', 'signup')->name('signup');
-        });
+    // Authentication UI
+    Route::prefix('authentication')->controller(AuthenticationController::class)->group(function () {
+        Route::get('/forgotpassword', 'forgotPassword')->name('forgotPassword');
+        Route::get('/signin', 'signin')->name('signin');
+        Route::get('/signup', 'signup')->name('signup');
     });
 
     // Chart
-    Route::prefix('chart')->group(function () {
-        Route::controller(ChartController::class)->group(function () {
-            Route::get('/columnchart', 'columnChart')->name('columnChart');
-            Route::get('/linechart', 'lineChart')->name('lineChart');
-            Route::get('/piechart', 'pieChart')->name('pieChart');
-        });
+    Route::prefix('chart')->controller(ChartController::class)->group(function () {
+        Route::get('/columnchart', 'columnChart')->name('columnChart');
+        Route::get('/linechart', 'lineChart')->name('lineChart');
+        Route::get('/piechart', 'pieChart')->name('pieChart');
     });
 
     // Componentpage
-    Route::prefix('componentspage')->group(function () {
-        Route::controller(ComponentpageController::class)->group(function () {
-            Route::get('/alert', 'alert')->name('alert');
-            Route::get('/avatar', 'avatar')->name('avatar');
-            Route::get('/badges', 'badges')->name('badges');
-            Route::get('/button', 'button')->name('button');
-            Route::get('/calendar', 'calendar')->name('calendar');
-            Route::get('/card', 'card')->name('card');
-            Route::get('/carousel', 'carousel')->name('carousel');
-            Route::get('/colors', 'colors')->name('colors');
-            Route::get('/dropdown', 'dropdown')->name('dropdown');
-            Route::get('/imageupload', 'imageUpload')->name('imageUpload');
-            Route::get('/list', 'list')->name('list');
-            Route::get('/pagination', 'pagination')->name('pagination');
-            Route::get('/progress', 'progress')->name('progress');
-            Route::get('/radio', 'radio')->name('radio');
-            Route::get('/starrating', 'starRating')->name('starRating');
-            Route::get('/switch', 'switch')->name('switch');
-            Route::get('/tabs', 'tabs')->name('tabs');
-            Route::get('/tags', 'tags')->name('tags');
-            Route::get('/tooltip', 'tooltip')->name('tooltip');
-            Route::get('/typography', 'typography')->name('typography');
-            Route::get('/videos', 'videos')->name('videos');
-        });
+    Route::prefix('componentspage')->controller(ComponentpageController::class)->group(function () {
+        Route::get('/alert', 'alert')->name('alert');
+        Route::get('/avatar', 'avatar')->name('avatar');
+        Route::get('/badges', 'badges')->name('badges');
+        Route::get('/button', 'button')->name('button');
+        Route::get('/calendar', 'calendar')->name('calendar');
+        Route::get('/card', 'card')->name('card');
+        Route::get('/carousel', 'carousel')->name('carousel');
+        Route::get('/colors', 'colors')->name('colors');
+        Route::get('/dropdown', 'dropdown')->name('dropdown');
+        Route::get('/imageupload', 'imageUpload')->name('imageUpload');
+        Route::get('/list', 'list')->name('list');
+        Route::get('/pagination', 'pagination')->name('pagination');
+        Route::get('/progress', 'progress')->name('progress');
+        Route::get('/radio', 'radio')->name('radio');
+        Route::get('/starrating', 'starRating')->name('starRating');
+        Route::get('/switch', 'switch')->name('switch');
+        Route::get('/tabs', 'tabs')->name('tabs');
+        Route::get('/tags', 'tags')->name('tags');
+        Route::get('/tooltip', 'tooltip')->name('tooltip');
+        Route::get('/typography', 'typography')->name('typography');
+        Route::get('/videos', 'videos')->name('videos');
     });
 
     // Forms
-    Route::prefix('forms')->group(function () {
-        Route::controller(FormsController::class)->group(function () {
-            Route::get('/form-layout', 'formLayout')->name('formLayout');
-            Route::get('/form-validation', 'formValidation')->name('formValidation');
-            Route::get('/form', 'form')->name('form');
-            Route::get('/wizard', 'wizard')->name('wizard');
-        });
+    Route::prefix('forms')->controller(FormsController::class)->group(function () {
+        Route::get('/form-layout', 'formLayout')->name('formLayout');
+        Route::get('/form-validation', 'formValidation')->name('formValidation');
+        Route::get('/form', 'form')->name('form');
+        Route::get('/wizard', 'wizard')->name('wizard');
     });
 
     // Invoice
-    Route::prefix('invoice')->group(function () {
-        Route::controller(InvoiceController::class)->group(function () {
-            Route::get('/invoice-add', 'invoiceAdd')->name('invoiceAdd');
-            Route::get('/invoice-edit', 'invoiceEdit')->name('invoiceEdit');
-            Route::get('/invoice-list', 'invoiceList')->name('invoiceList');
-            Route::get('/invoice-preview', 'invoicePreview')->name('invoicePreview');
-        });
+    Route::prefix('invoice')->controller(InvoiceController::class)->group(function () {
+        Route::get('/invoice-add', 'invoiceAdd')->name('invoiceAdd');
+        Route::get('/invoice-edit', 'invoiceEdit')->name('invoiceEdit');
+        Route::get('/invoice-list', 'invoiceList')->name('invoiceList');
+        Route::get('/invoice-preview', 'invoicePreview')->name('invoicePreview');
     });
 
     // Settings
-    Route::prefix('settings')->group(function () {
-        Route::controller(SettingsController::class)->group(function () {
-            Route::get('/company', 'company')->name('company');
-            Route::get('/currencies', 'currencies')->name('currencies');
-            Route::get('/language', 'language')->name('language');
-            Route::get('/notification', 'notification')->name('notification');
-            Route::get('/notification-alert', 'notificationAlert')->name('notificationAlert');
-            Route::get('/payment-gateway', 'paymentGateway')->name('paymentGateway');
-            Route::get('/theme', 'theme')->name('theme');
-        });
+    Route::prefix('settings')->controller(SettingsController::class)->group(function () {
+        Route::get('/company', 'company')->name('company');
+        Route::get('/currencies', 'currencies')->name('currencies');
+        Route::get('/language', 'language')->name('language');
+        Route::get('/notification', 'notification')->name('notification');
+        Route::get('/notification-alert', 'notificationAlert')->name('notificationAlert');
+        Route::get('/payment-gateway', 'paymentGateway')->name('paymentGateway');
+        Route::get('/theme', 'theme')->name('theme');
     });
 
+   // Profile
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [SuperadminDashboardController::class, 'profileIndex'])->name('profile.index');
+    Route::put('/profile', [SuperadminDashboardController::class, 'profileUpdate'])->name('profile.update');
+    Route::put('/profile/password', [SuperadminDashboardController::class, 'profilePassword'])->name('profile.password');
+});
+
+
     // Table
-    Route::prefix('table')->group(function () {
-        Route::controller(TableController::class)->group(function () {
-            Route::get('/tablebasic', 'tableBasic')->name('tableBasic');
-            Route::get('/tabledata', 'tableData')->name('tableData');
-        });
+    Route::prefix('table')->controller(TableController::class)->group(function () {
+        Route::get('/tablebasic', 'tableBasic')->name('tableBasic');
+        Route::get('/tabledata', 'tableData')->name('tableData');
     });
 
     // Users
-    Route::prefix('users')->group(function () {
-        Route::controller(UsersController::class)->group(function () {
-            Route::get('/add-user', 'addUser')->name('addUser');
-            Route::get('/users-grid', 'usersGrid')->name('usersGrid');
-            Route::get('/users-list', 'usersList')->name('usersList');
-            Route::get('/view-profile', 'viewProfile')->name('viewProfile');
-        });
-    });
+   // Route::prefix('users')->controller(UsersController::class)->group(function () {
+   //     Route::get('/add-user', 'addUser')->name('addUser');
+   //     Route::get('/users-grid', 'usersGrid')->name('usersGrid');
+   //     Route::get('/users-list', 'usersList')->name('usersList');
+   //     Route::get('/view-profile', 'viewProfile')->name('viewProfile');
+   // });
 
     // Blog
-    Route::prefix('blog')->group(function () {
-        Route::controller(BlogController::class)->group(function () {
-            Route::get('/addBlog', 'addBlog')->name('addBlog');
-            Route::get('/blog', 'blog')->name('blog');
-            Route::get('/blogDetails', 'blogDetails')->name('blogDetails');
-        });
+    Route::prefix('blog')->controller(BlogController::class)->group(function () {
+        Route::get('/addBlog', 'addBlog')->name('addBlog');
+        Route::get('/blog', 'blog')->name('blog');
+        Route::get('/blogDetails', 'blogDetails')->name('blogDetails');
     });
 
     // Role & Access
-    Route::prefix('roleandaccess')->group(function () {
-        Route::controller(RoleandaccessController::class)->group(function () {
-            Route::get('/assignRole', 'assignRole')->name('assignRole');
-            Route::get('/roleAaccess', 'roleAaccess')->name('roleAaccess');
-        });
+    Route::prefix('roleandaccess')->controller(RoleandaccessController::class)->group(function () {
+        Route::get('/assignRole', 'assignRole')->name('assignRole');
+        Route::get('/roleAaccess', 'roleAaccess')->name('roleAaccess');
     });
 
     // Cryptocurrency
-    Route::prefix('cryptocurrency')->group(function () {
-        Route::controller(CryptocurrencyController::class)->group(function () {
-            Route::get('/marketplace', 'marketplace')->name('marketplace');
-            Route::get('/marketplacedetails', 'marketplaceDetails')->name('marketplaceDetails');
-            Route::get('/portfolio', 'portfolio')->name('portfolio');
-            Route::get('/wallet', 'wallet')->name('wallet');
-        });
+    Route::prefix('cryptocurrency')->controller(CryptocurrencyController::class)->group(function () {
+        Route::get('/marketplace', 'marketplace')->name('marketplace');
+        Route::get('/marketplacedetails', 'marketplaceDetails')->name('marketplaceDetails');
+        Route::get('/portfolio', 'portfolio')->name('portfolio');
+        Route::get('/wallet', 'wallet')->name('wallet');
     });
-
 });
